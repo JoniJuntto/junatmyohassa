@@ -1,14 +1,73 @@
-import fetch from 'node-fetch';
+const fetch = require("node-fetch");
+const express = require("express");
+const app = express();
 
-const exampleFetch = async () => {
-    try {
-        const response = await
-            fetch('exampleurl.com');
-        const json = await response.json();
-        return json;
-    } catch (error) {
-        console.log(error);
+//Hakee kaikkki tämän päivän junat
+app.get("/kaikki", async (req, res) => {
+  try {
+    const today = new Date();
+    const date = today.toLocaleDateString();
+    const finalform = date.split("/").reverse().join("-");
+    console.log(finalform);
+
+    const response = await fetch(
+      `https://rata.digitraffic.fi/api/v1/trains/${finalform}`
+    );
+    const json = await response.json();
+    res.json(json);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+//mielivaltanen haku graphql rajapinnasta
+app.get("/graphfetch", async (req, res) => {
+  const query = ` 
+{
+  currentlyRunningTrains(where: {operator: {shortCode: {equals: "vr"}}}) {
+    trainNumber
+    departureDate
+    trainLocations(where: {speed: {greaterThan: 120}}, orderBy: {timestamp: DESCENDING}, take: 1) {
+      speed
+      timestamp
+      location
     }
+  }
 }
+`;
+  const options = {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept-Encoding": " gzip" },
+    body: JSON.stringify({ query }),
+  };
 
-exampleFetch();
+  try {
+    const response = await fetch(
+      "https://rata.digitraffic.fi/api/v2/graphql/graphql",
+      options
+    );
+    const json = await response.json();
+    res.json(json.data);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+/* Hakee junat jotka kulkevat valitsemien asemien välillä. Esim /HKI/MRL
+    Linkki lyhennekoodeihin : https://rata.digitraffic.fi/api/v1/metadata/stations */
+app.get("/:mist/:mihin", async (req, res) => {
+  const mist = req.params.mist;
+  const mihin = req.params.mihin;
+  console.log(req.params);
+
+  try {
+    const response = await fetch(`
+    https://rata.digitraffic.fi/api/v1/live-trains/station/${mist}/${mihin}`);
+    const json = await response.json();
+    res.json(json);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+app.listen(3000, () => console.log("listening at 3000"));
