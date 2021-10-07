@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import MapView, { Marker }  from 'react-native-maps';
-import { StyleSheet, View, Dimensions, TextInput, Button } from 'react-native';
+import { StyleSheet, View, Dimensions, TextInput, Button, Text } from 'react-native';
 import * as Location from 'expo-location';
+
 
 
 export default function Home() {
 
+    const [locationCheck, setLocationCheck] = useState(0);
     const [regionLat, setRegionLat] = useState(60.201373);
     const [regionLng, setRegionLng] = useState(24.934041);
     const [markerLatitude, setMarkerLatitude] = useState(60.201373);
     const [markerLongitude, setMarkerLongitude] = useState(24.934041);
     const [inputText, setInputText] = useState('')
-    const [windowHeight, setWindowHeight] = useState(100);
-    const [windowWidth, setWindonwWidth] = useState(100);
+    //These two get the window size for the map
+    const [windowHeight, setWindowHeight] = useState(Dimensions.get('window').height);
+    const [windowWidth, setWindonwWidth] = useState(Dimensions.get('window').width);
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
 
-    useEffect(() => {
-        setWindowHeight(Dimensions.get('window').height * 0, 8);
-        setWindonwWidth(Dimensions.get('window').width)
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
+    //This is called by the useEffect when the screen starts
+    const getLocation = async () =>{
+        let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission to access location was denied');
                 return;
@@ -31,21 +29,32 @@ export default function Home() {
 
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
-        })();
-    }, []);
+            setMarkerLatitude(location.coords.latitude);
+            setMarkerLongitude(location.coords.longitude);
+    }
+
+
+    useEffect(() => {
+        getLocation();
+    }, [locationCheck]);
 
     let text = 'Waiting..';
     if (errorMsg) {
         text = errorMsg;
     } else if (location) {
         text = JSON.stringify(location);
-        setMarkerLatitude(JSON.latitude[0]);
-        setMarkerLongitude(JSON.longitude[0]);
-        setRegionLat(JSON.latitude[0]);
-        setRegionLng(JSON.longitude[0]);
     }
 
-
+    //Sets the failsafe if there is not allowed access to location
+    if (errorMsg === text){
+        return(
+            <View style={styles.container}>
+                <Text style={styles.error_msg}>You shall not pass</Text> 
+                <Text style={styles.txt}>have you given the rights to your location?</Text>
+                <Button title='Check again!' onPress={() => setLocationCheck(locationCheck + 1)} />
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -56,12 +65,11 @@ export default function Home() {
 
                 //This is hacky way to get the text from TextInput :D
                 onChangeText={text => setInputText(text)} value={inputText}
+
+                placeholder="Find a train or station"
             />
-
-            <Text> Your location is: {text}</Text>
-
             <MapView
-                //Makes the map as large as the screen - 20% from height
+                //Makes the map as large as it can be
                 width={windowWidth}
                 height={windowHeight}
                 flex={1}
@@ -85,6 +93,7 @@ export default function Home() {
     );
 }
 
+//These will be transferd to the css file
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -98,5 +107,12 @@ const styles = StyleSheet.create({
         width: 300,
         height: 40,
         marginBottom: 1,
+    },
+    error_msg: {
+        fontSize: '40%',
+        color: 'red'
+    },
+    txt:{
+        color: 'red'
     },
 });
