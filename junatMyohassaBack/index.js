@@ -2,14 +2,14 @@ const fetch = require("node-fetch");
 const express = require("express");
 const app = express();
 
+//kikkaillaan digitrafficin rajapinnoille sopivaan formaattiin päivä
+const today = new Date();
+const date = today.toLocaleDateString();
+const finalform = date.split("/").reverse().join("-");
+
 //Hakee kaikkki tämän päivän junat
 app.get("/kaikki", async (req, res) => {
   try {
-    const today = new Date();
-    const date = today.toLocaleDateString();
-    const finalform = date.split("/").reverse().join("-");
-    console.log(finalform);
-
     const response = await fetch(
       `https://rata.digitraffic.fi/api/v1/trains/${finalform}`
     );
@@ -24,13 +24,19 @@ app.get("/kaikki", async (req, res) => {
 app.get("/graphfetch", async (req, res) => {
   const query = ` 
 {
-  currentlyRunningTrains(where: {operator: {shortCode: {equals: "vr"}}}) {
+  trainsByDepartureDate(
+    departureDate: "${finalform}", 
+    where: {and: [ {operator: {shortCode: {equals: "vr"}}}, {commuterLineid: {equals: "P"}}]}, 
+    orderBy: {trainNumber: DESCENDING}) 
+  {
     trainNumber
     departureDate
-    trainLocations(where: {speed: {greaterThan: 120}}, orderBy: {timestamp: DESCENDING}, take: 1) {
-      speed
-      timestamp
-      location
+    commuterLineid
+    timeTableRows {
+      station {
+        name
+        uicCode
+      }
     }
   }
 }
