@@ -4,8 +4,15 @@ const app = express();
 
 //kikkaillaan digitrafficin rajapinnoille sopivaan formaattiin päivä
 const today = new Date();
-const date = today.toLocaleDateString();
+console.log(today);
+const date = today.toLocaleDateString("en-US", {
+  year: "numeric",
+  day: "2-digit",
+  month: "2-digit",
+});
+console.log(date);
 const finalform = date.split("/").reverse().join("-");
+console.log(finalform);
 
 //Hakee kaikkki tämän päivän junat
 app.get("/kaikki", async (req, res) => {
