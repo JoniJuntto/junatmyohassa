@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, View, Dimensions, FlatList } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, View, Dimensions, FlatList, Text } from 'react-native';
 
-export default function TrainListing() {
+export default function TrainListing({ navigation }) {
 
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
@@ -12,14 +12,17 @@ export default function TrainListing() {
   );
 
   const haeKaikkiJunat = async () => {
+    console.log("heh")
     try {
         const response = await
-            fetch('localhost:3000/kaikki');
+            fetch('http://localhost:3000/roi/ol');
         const json = await response.json();
         console.log(json)
         setHaut(json);
         setVirhe('');
     } catch (error) {
+      console.log("Vittu toimi")
+      console.log(error)
         setHaut([]);
         setVirhe('Haku ei onnistunut');
     }
@@ -29,9 +32,16 @@ useEffect(() => {
   haeKaikkiJunat();
 }, []);
 
+if(virhe === 'Haku ei onnistunut'){
+  return(
+  <Text>Ei onnistu</Text>
+  );
+}
+
   return (
     <View style={styles.container}>
         <Text>Tässä junalistaus</Text>
+
         <FlatList
         data={haut}
         renderItem={renderItem}

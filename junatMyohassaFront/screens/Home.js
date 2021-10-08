@@ -5,7 +5,8 @@ import * as Location from 'expo-location';
 
 
 
-export default function Home() {
+
+export default function Home({ navigation }) {
 
     const [locationCheck, setLocationCheck] = useState(0);
     const [regionLat, setRegionLat] = useState(60.201373);
@@ -68,6 +69,7 @@ export default function Home() {
 
                 placeholder="Find a train or station"
             />
+            <Button title="mee sinne listaan" onPress={()=>{navigation.navigate("Listing")}} />
             <MapView
                 //Makes the map as large as it can be
                 width={windowWidth}
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
         marginBottom: 1,
     },
     error_msg: {
-        fontSize: '40%',
+        fontSize: 50,
         color: 'red'
     },
     txt:{
