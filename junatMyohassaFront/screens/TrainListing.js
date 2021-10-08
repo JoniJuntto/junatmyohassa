@@ -1,11 +1,42 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, View, Dimensions, FlatList } from 'react-native';
 
 export default function TrainListing() {
+
+  const [haut, setHaut] = useState([]);
+  const [virhe, setVirhe] = useState('');
+  var value = '';
+
+  const renderItem = ({ item }) => (
+    <Item title={item} />
+  );
+
+  const haeKaikkiJunat = async () => {
+    try {
+        const response = await
+            fetch('localhost:3000/kaikki');
+        const json = await response.json();
+        console.log(json)
+        setHaut(json);
+        setVirhe('');
+    } catch (error) {
+        setHaut([]);
+        setVirhe('Haku ei onnistunut');
+    }
+}
+
+useEffect(() => {
+  haeKaikkiJunat();
+}, []);
 
   return (
     <View style={styles.container}>
         <Text>Tässä junalistaus</Text>
+        <FlatList
+        data={haut}
+        renderItem={renderItem}
+        keyExtractor={item => item.trainNumber}
+      />
     </View>
   );
 }
