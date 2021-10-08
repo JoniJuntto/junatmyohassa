@@ -21,23 +21,23 @@ app.get("/kaikki", async (req, res) => {
 });
 
 //mielivaltanen haku graphql rajapinnasta
-app.get("/graphfetch", async (req, res) => {
-  const query = ` 
+app.get("/graphfetch/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const query = `
+
 {
   trainsByDepartureDate(
-    departureDate: "${finalform}", 
-    where: {and: [ {operator: {shortCode: {equals: "vr"}}}, {commuterLineid: {equals: "P"}}]}, 
-    orderBy: {trainNumber: DESCENDING}) 
+    departureDate: "${finalform}",
+    where: {and: [ {operator: {shortCode: {equals: "vr"}}}, {commuterLineid: {equals: "${id}"}}]},
+    orderBy: {trainNumber: DESCENDING})
   {
     trainNumber
     departureDate
-    commuterLineid
-    timeTableRows {
-      station {
-        name
-        uicCode
-      }
+    trainLocations{
+      location
     }
+    commuterLineid
   }
 }
 `;
