@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Dimensions, FlatList, Text } from 'react-native';
+import List from './List';
 
 export default function TrainListing({ navigation }) {
 
@@ -7,21 +8,14 @@ export default function TrainListing({ navigation }) {
   const [virhe, setVirhe] = useState('');
   var value = '';
 
-  const renderItem = ({ item }) => (
-    <Item title={item} />
-  );
-
   const haeKaikkiJunat = async () => {
-    console.log("heh")
     try {
         const response = await
-            fetch('http://localhost:3000/roi/ol');
+            fetch('http://10.0.2.2:3000/ROI/OL');
         const json = await response.json();
-        console.log(json)
         setHaut(json);
         setVirhe('');
     } catch (error) {
-      console.log("Vittu toimi")
       console.log(error)
         setHaut([]);
         setVirhe('Haku ei onnistunut');
@@ -32,21 +26,10 @@ useEffect(() => {
   haeKaikkiJunat();
 }, []);
 
-if(virhe === 'Haku ei onnistunut'){
-  return(
-  <Text>Ei onnistu</Text>
-  );
-}
-
   return (
     <View style={styles.container}>
         <Text>Tässä junalistaus</Text>
-
-        <FlatList
-        data={haut}
-        renderItem={renderItem}
-        keyExtractor={item => item.trainNumber}
-      />
+        <List list={haut}/>
     </View>
   );
 }
