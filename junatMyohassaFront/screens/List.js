@@ -9,7 +9,7 @@ export default function List(props){
                 props.list.map(train => {
                     return (
                         <View>
-                            <Text>{train.operatorShortCode}</Text>
+                            <Text>{train.trainNumber}</Text>
                         </View>
                     );
                 })
