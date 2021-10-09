@@ -4,7 +4,6 @@ import React from 'react';
 export default function List(props){
     return (
         <View>
-            
             {
                 props.list.map(train => {
                     return (
