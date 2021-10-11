@@ -29,6 +29,16 @@ export default function Home({ navigation }) {
                     });
                 }}
             />
+            <Button
+                title="Go to stationlisting"
+                onPress={() => {
+                    /* Navigate to the Listing route with param from TextInput */
+                    navigation.navigate('Station', {
+                        itemId: 86,
+                        otherParam: inputText,
+                    });
+                }}
+            />
             <Map />
         </View>
     );
