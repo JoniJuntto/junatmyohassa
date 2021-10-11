@@ -11,34 +11,35 @@ export default function TrainListing({ navigation, route }) {
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
 
-  const haeKaikkiJunat = async () => {
+  const haeJunatAsemalle = async () => {
     try {
-      const response = await
-        fetch('http://10.0.2.2:3000/graphfetch/' + JSON.stringify(otherParam));
-      const json = await response.json();
-      setHaut(json);
-      console.log(json);
-      setVirhe('');
+        console.log(otherParam);
+        const response = await
+          fetch('http://10.0.2.2:3000/asema/' + otherParam);
+        const json = await response.json();
+        setHaut(json);
+        setVirhe('');
     } catch (error) {
-      setHaut([]);
-      setVirhe('Haku ei onnistunut');
+        setHaut([]);
+        setVirhe('Haku ei onnistunut');
     }
   }
 
   useEffect(() => {
-    haeKaikkiJunat();
+    haeJunatAsemalle();
   }, []);
 
   //If there is a problem with fetch, it will just show error text on screen
   if (virhe) {
-    <Text>{virhe}</Text>
+    <View>
+      <Text>{virhe}</Text>
+      <Text>Cannot fetch the trains, check your internet-connection</Text>
+    </View>
   }
 
   return (
     <View style={styles.container}>
-      <Text>Tässä junalistausta</Text>
-      {/*This is the the data that came from Home.js :) */}
-      <Text>{JSON.stringify(otherParam)}</Text>
+      <Text>Tässä junat jotka menevät asemalta: {otherParam}</Text>
       <List list={haut} />
       <Map />
     </View>
