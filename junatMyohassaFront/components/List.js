@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function List(props) {
 
-
+    console.log(props.list);
     const Item = ({ title }) => (
         <View>
           <Text>{title.commuterLineID}</Text>
@@ -16,7 +16,7 @@ export default function List(props) {
         <FlatList
         data={props.list}
         renderItem={renderItem}
-        keyExtractor={item => item.scheduledTime}
+        keyExtractor={item => item.trainNumber}
       />
     );
 }
