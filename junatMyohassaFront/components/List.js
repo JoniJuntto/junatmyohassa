@@ -1,13 +1,23 @@
 import { View, Text, FlatList } from "react-native";
 import React from 'react';
+import { Card, ListItem, Button, Icon } from 'react-native-elements'
+import styles from '../styles/Styles'
+import { useNavigation } from '@react-navigation/native';
 
 export default function List(props) {
+    const navigation = useNavigation();
+
+    const onInfoPress = () =>{
+        navigation.navigate('TrainInfo');
+    }
 
     console.log(props.list);
     const Item = ({ title }) => (
-        <View>
+        <Card containerStyle={styles.card}>
           <Text>{title.commuterLineID}</Text>
-        </View>
+          <Icon name='info' onPress={onInfoPress}/>
+        </Card>
+         
       );
       const renderItem = ({ item }) => (
         <Item title={item} />

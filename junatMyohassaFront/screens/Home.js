@@ -19,16 +19,7 @@ export default function Home({ navigation }) {
                 onChangeText={text => setInputText(text)} value={inputText}
                 placeholder="Find a train or station"
             />
-            <Button
-                title="Go to Details"
-                onPress={() => {
-                    /* Navigate to the Listing route with param from TextInput */
-                    navigation.navigate('Listing', {
-                        itemId: 86,
-                        otherParam: inputText,
-                    });
-                }}
-            />
+            
             <Button
                 title="Go to stationlisting"
                 onPress={() => {
