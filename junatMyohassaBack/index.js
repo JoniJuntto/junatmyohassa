@@ -2,6 +2,10 @@ const fetch = require("node-fetch");
 const express = require("express");
 const app = express();
 
+//Added because express hitted the max limit when fetching all the trains
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
+
 //kikkaillaan digitrafficin rajapinnoille sopivaan formaattiin päivä
 const today = new Date();
 console.log(today);
