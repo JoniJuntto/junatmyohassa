@@ -3,8 +3,8 @@ const express = require("express");
 const app = express();
 
 //Added because express hitted the max limit when fetching all the trains
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb" }));
 
 //kikkaillaan digitrafficin rajapinnoille sopivaan formaattiin päivä
 const today = new Date();
@@ -26,6 +26,7 @@ app.get("/kaikki", async (req, res) => {
     );
     const json = await response.json();
     res.json(json);
+    console.log("tämä tapahtui");
   } catch (error) {
     res.json(error);
   }
@@ -46,6 +47,7 @@ app.get("/graphfetch/:id", async (req, res) => {
     trainNumber
     departureDate
     trainLocations{
+      speed
       location
     }
     commuterLineid
@@ -72,7 +74,7 @@ app.get("/graphfetch/:id", async (req, res) => {
 
 /* Hakee junat jotka kulkevat valitsemien asemien välillä. Esim /HKI/MRL
     Linkki lyhennekoodeihin : https://rata.digitraffic.fi/api/v1/metadata/stations */
-app.get("/:mist/:mihin", async (req, res) => {
+app.get("asemienvali/:mist/:mihin", async (req, res) => {
   const mist = req.params.mist;
   const mihin = req.params.mihin;
   console.log(req.params);
@@ -82,6 +84,22 @@ app.get("/:mist/:mihin", async (req, res) => {
     https://rata.digitraffic.fi/api/v1/live-trains/station/${mist}/${mihin}`);
     const json = await response.json();
     res.json(json);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+app.get("/asema/:asema/", async (req, res) => {
+  const asema = req.params.asema;
+  console.log(req.params);
+
+  try {
+    const response = await fetch(`
+    https://rata.digitraffic.fi/api/v1/live-trains/station/${asema}`);
+    const data = await response.json();
+    const trainnr = data.map((s) => s.trainNumber);
+    console.log(trainnr);
+    res.json(data);
   } catch (error) {
     res.json(error);
   }
