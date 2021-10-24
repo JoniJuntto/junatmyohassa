@@ -9,13 +9,10 @@ app.use(express.urlencoded({ limit: "50mb" }));
 //kikkaillaan digitrafficin rajapinnoille sopivaan formaattiin päivä
 const today = new Date();
 console.log(today);
-const date = today.toLocaleDateString("en-US", {
-  year: "numeric",
-  day: "2-digit",
-  month: "2-digit",
-});
-console.log(date);
-const finalform = date.split("/").reverse().join("-");
+console.log(today.toISOString().split("T")[0], "kamoon");
+
+const finalform = today.toISOString().split("T")[0];
+
 console.log(finalform);
 
 //Hakee kaikkki tämän päivän junat
@@ -39,19 +36,22 @@ app.get("/graphfetch/:id", async (req, res) => {
   const query = `
 
 {
-  trainsByDepartureDate(
-    departureDate: "${finalform}",
-    where: {and: [ {operator: {shortCode: {equals: "vr"}}}, {commuterLineid: {equals: "${id}"}}]},
-    orderBy: {trainNumber: DESCENDING})
-  {
+  trainsByDepartureDate(departureDate: "${finalform}", 
+    where: {timeTableRows:{contains:{station:{shortCode:{equals:"${id}"}}}}}
+    ) {
     trainNumber
-    departureDate
-    trainLocations{
-      speed
-      location
-    }
     commuterLineid
-  }
+    
+    timeTableRows(where: {and: [ {station: {shortCode: {equals: "${id}"}}}, {type: {equals: "DEPARTURE"}}]})
+      {
+      type
+      differenceInMinutes
+      scheduledTime
+      station {
+        shortCode
+      }
+      }
+    }
 }
 `;
   const options = {
@@ -66,12 +66,19 @@ app.get("/graphfetch/:id", async (req, res) => {
       options
     );
     const json = await response.json();
-    res.json(json.data);
+
+    Object.keys(json.data.trainsByDepartureDate).forEach(function (prop) {
+      json.data.trainsByDepartureDate[prop].timeTableRows.push(
+        json.data.trainsByDepartureDate[prop].trainNumber
+      );
+    });
+
+    console.log(json.data.trainsByDepartureDate.timeTableRows);
+    res.json(json.data.trainsByDepartureDate);
   } catch (error) {
     res.json(error);
   }
 });
-
 /* Hakee junat jotka kulkevat valitsemien asemien välillä. Esim /HKI/MRL
     Linkki lyhennekoodeihin : https://rata.digitraffic.fi/api/v1/metadata/stations */
 app.get("asemienvali/:mist/:mihin", async (req, res) => {
@@ -89,20 +96,67 @@ app.get("asemienvali/:mist/:mihin", async (req, res) => {
   }
 });
 
+// to enable deep level flatten use recursion with reduce and concat
+function flatten(input) {
+  const stack = [...input];
+  const result = [];
+  while (stack.length) {
+    // pop value from stack
+    const next = stack.pop();
+    if (Array.isArray(next)) {
+      // push back array items, won't modify the original input
+      stack.push(...next);
+    } else {
+      result.push(next);
+    }
+  }
+  // reverse to restore input order
+  return result.reverse();
+}
+
+function iterateObject(obj) {
+  let inner_obj = {}; //Blankko objekti joka myöhemmin täytetään
+  for (prop in obj) {
+    if (typeof obj[prop] === "object") {
+      iterateObject(obj[prop]);
+    } else {
+      // käydään läpi tota kasaa paskaa ja etitään allaolevia "avaimia" ja sen jälkeen
+      // löydetyt avaimet ja niiden parit sit läpsästään yllä olevaan blankkoon
+      if (
+        prop === "trainNumber" ||
+        prop === "scheduledTime" ||
+        prop === "commuterLineid"
+      ) {
+        inner_obj[prop] = obj[prop];
+      }
+    }
+  }
+  arr.push(inner_obj); //Sitten pusketaan oliot funktion ulkopuolella luotuun arrayhin
+}
+
 app.get("/asema/:asema/", async (req, res) => {
   const asema = req.params.asema;
   console.log(req.params);
-
   try {
     const response = await fetch(`
-    https://rata.digitraffic.fi/api/v1/live-trains/station/${asema}`);
+    https://rata.digitraffic.fi/api/v1/live-trains/station/${asema}?arrived_trains=2&arriving_trains=2&departed_trains=2&departing_trains=2&include_nonstopping=false`);
+
     const data = await response.json();
-    const trainnr = data.map((s) => s.trainNumber);
-    console.log(trainnr);
-    res.json(data);
+
+    const trainNr = data.map((s) => s.trainNumber + ", " + s.commuterLineID);
+    console.log(trainNr);
+
+    const times = data.reduce(
+      (r, { timeTableRows }) => [...r, ...timeTableRows],
+      []
+    );
+    console.log(times);
+    const { scheduledTime, differenceInMinutes } = times;
+    console.log(scheduledTime, differenceInMinutes);
+
+    res.send(data);
   } catch (error) {
     res.json(error);
   }
 });
-
 app.listen(3000, () => console.log("listening at 3000"));
