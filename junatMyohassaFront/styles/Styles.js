@@ -28,4 +28,13 @@ export default StyleSheet.create({
     txt:{
         color: 'red'
     },
+    card:{
+
+        width: Dimensions.get('window').width - 100,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    }
+
 });

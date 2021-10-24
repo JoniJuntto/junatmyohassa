@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './screens/Home';
 import TrainListing from './screens/TrainListing';
 import TrainsOnStation from './screens/TrainsOnStation';
+import TrainInfo from './screens/TrainInfo';
 
 
 const MyTheme = {
@@ -33,6 +34,7 @@ export default function App() {
         <Stack.Screen name='Home' component={Home}/>
         <Stack.Screen name="Listing" component={TrainListing} />
         <Stack.Screen name="Station" component={TrainsOnStation} />
+        <Stack.Screen name="TrainInfo" component={TrainInfo} />
       </Stack.Navigator>
     </NavigationContainer>
   );

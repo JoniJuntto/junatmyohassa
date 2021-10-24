@@ -41,7 +41,6 @@ export default function TrainListing({ navigation, route }) {
     <View style={styles.container}>
       <Text>Tässä junat jotka menevät asemalta: {otherParam}</Text>
       <List list={haut} />
-      <Map />
     </View>
   );
 }
