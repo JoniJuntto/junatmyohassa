@@ -6,7 +6,7 @@ import Map from '../components/Map';
 
 export default function TrainListing({ navigation, route }) {
 
-  const { itemId, otherParam } = route.params;
+  const { otherParam } = route.params;
 
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
