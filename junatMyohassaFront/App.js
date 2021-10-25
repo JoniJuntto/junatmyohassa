@@ -1,41 +1,61 @@
-import React from 'react';
-import { NavigationContainer} from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import Home from './screens/Home';
 import TrainListing from './screens/TrainListing';
 import TrainsOnStation from './screens/TrainsOnStation';
 import TrainInfo from './screens/TrainInfo';
+import * as React from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import Profile from './screens/Profile';
+import {  AntDesign } from '@expo/vector-icons';
 
-
-const MyTheme = {
-  dark: true,
-  colors: {
-    primary: '#bd06d1',
-    background: 'black',
-    card: '#8a0099',
-    text: 'rgb(28, 28, 30)',
-    border: 'rgb(199, 199, 204)',
-    notification: 'rgb(255, 69, 58)',
-  },
-};
-
-
-
-
-
-
-const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 export default function App() {
-  
   return (
-    <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator>
-        <Stack.Screen name='Home' component={Home}/>
-        <Stack.Screen name="Listing" component={TrainListing} />
-        <Stack.Screen name="Station" component={TrainsOnStation} />
-        <Stack.Screen name="TrainInfo" component={TrainInfo} />
-      </Stack.Navigator>
+    <NavigationContainer>
+      <Drawer.Navigator initialRouteName="Home">
+        <Drawer.Screen
+          name="Home"
+          component={Home}
+          options={
+            {
+              drawerLabel: "Home",
+              drawerIcon: ({ tintColor }) => <AntDesign name="home" size={30} color={tintColor} />
+            }}
+        />
+
+        <Drawer.Screen
+          name="Profile"
+          component={Profile}
+          options={
+            {
+              drawerLabel: "Profile",
+              drawerIcon: ({ tintColor }) => <AntDesign name="profile" size={30} color={tintColor} />
+            }}
+        />
+
+
+        <Drawer.Screen
+          name="Station"
+          component={TrainsOnStation}
+          options={{
+            drawerLabel: () => null,
+            title: null,
+            drawerIcon: () => null
+          }}
+        />
+
+        <Drawer.Screen
+          name="TrainInfo"
+          component={TrainInfo}
+          options={{
+            drawerLabel: () => null,
+            title: null,
+            drawerIcon: () => null
+          }}
+        />
+
+      </Drawer.Navigator>
     </NavigationContainer>
   );
-};
+}
