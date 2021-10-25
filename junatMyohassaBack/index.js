@@ -8,14 +8,9 @@ app.use(express.urlencoded({ limit: "50mb" }));
 
 //kikkaillaan digitrafficin rajapinnoille sopivaan formaattiin päivä
 const today = new Date();
-console.log(today);
-const date = today.toLocaleDateString("en-US", {
-  year: "numeric",
-  day: "2-digit",
-  month: "2-digit",
-});
-console.log(date);
-const finalform = date.split("/").reverse().join("-");
+
+const finalform = today.toISOString().split("T")[0];
+
 console.log(finalform);
 
 //Hakee kaikkki tämän päivän junat
@@ -39,19 +34,22 @@ app.get("/graphfetch/:id", async (req, res) => {
   const query = `
 
 {
-  trainsByDepartureDate(
-    departureDate: "${finalform}",
-    where: {and: [ {operator: {shortCode: {equals: "vr"}}}, {commuterLineid: {equals: "${id}"}}]},
-    orderBy: {trainNumber: DESCENDING})
-  {
+  trainsByDepartureDate(departureDate: "${finalform}", 
+    where: {timeTableRows:{contains:{station:{shortCode:{equals:"${id}"}}}}}
+    ) {
     trainNumber
-    departureDate
-    trainLocations{
-      speed
-      location
-    }
     commuterLineid
-  }
+    
+    timeTableRows(where: {and: [ {station: {shortCode: {equals: "${id}"}}}, {type: {equals: "DEPARTURE"}}]})
+      {
+      type
+      differenceInMinutes
+      scheduledTime
+      station {
+        shortCode
+      }
+      }
+    }
 }
 `;
   const options = {
@@ -66,12 +64,12 @@ app.get("/graphfetch/:id", async (req, res) => {
       options
     );
     const json = await response.json();
-    res.json(json.data);
+
+    res.json(json.data.trainsByDepartureDate);
   } catch (error) {
     res.json(error);
   }
 });
-
 /* Hakee junat jotka kulkevat valitsemien asemien välillä. Esim /HKI/MRL
     Linkki lyhennekoodeihin : https://rata.digitraffic.fi/api/v1/metadata/stations */
 app.get("asemienvali/:mist/:mihin", async (req, res) => {
@@ -92,17 +90,15 @@ app.get("asemienvali/:mist/:mihin", async (req, res) => {
 app.get("/asema/:asema/", async (req, res) => {
   const asema = req.params.asema;
   console.log(req.params);
-
   try {
     const response = await fetch(`
-    https://rata.digitraffic.fi/api/v1/live-trains/station/${asema}`);
+    https://rata.digitraffic.fi/api/v1/live-trains/station/${asema}?arrived_trains=2&arriving_trains=2&departed_trains=2&departing_trains=2&include_nonstopping=false`);
+
     const data = await response.json();
-    const trainnr = data.map((s) => s.trainNumber);
-    console.log(trainnr);
-    res.json(data);
+
+    res.send(data);
   } catch (error) {
     res.json(error);
   }
 });
-
 app.listen(3000, () => console.log("listening at 3000"));
