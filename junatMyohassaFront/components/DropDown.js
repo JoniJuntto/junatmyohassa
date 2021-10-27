@@ -7,7 +7,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 
 export default function DropDown({ route }) {
 
-    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
+    const dropdownItems = ["Egypt", "Canada", "Australia", "Ireland"]
     const [virhe, setVirhe] = useState('');
     const [haut, setHaut] = useState([]);
 
@@ -15,7 +15,7 @@ export default function DropDown({ route }) {
     const haeKaikkiJunat = async () => {
         try {
             const response = await
-                fetch('http://10.0.2.2:3000/graphfetch/HKI');
+                fetch('http://10.0.2.2:3000/kaikki');
             const json = await response.json();
             setHaut(json);
             setVirhe('');
@@ -31,7 +31,7 @@ export default function DropDown({ route }) {
     }, []);
 
     const log = () =>{
-        console.log(haut);
+        map
     }
 
     //If there is a problem with fetch, it will just show error text on screen
@@ -46,7 +46,7 @@ export default function DropDown({ route }) {
         <View style={styles.container}>
             <Button title='Buttton' onPress={log} /> 
             <SelectDropdown
-                data={haut}
+                data={dropdownItems}
                 onSelect={(selectedItem, index) => {
                     console.log(selectedItem, index)
                 }}

@@ -3,6 +3,8 @@ import { View, Text } from 'react-native';
 import List from '../components/List';
 import styles from '../styles/Styles';
 import Map from '../components/Map';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 export default function TrainListing({ navigation, route }) {
 
@@ -11,11 +13,12 @@ export default function TrainListing({ navigation, route }) {
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
 
-  const haeJunatAsemalle = async () => {
+
+  const haeJunatAsemalle = async (userInput1) => {
     try {
-        console.log(userInput);
+        console.log(userInput + "async");
         const response = await
-          fetch('http://10.0.2.2:3000/asema/' + userInput);
+          fetch('http://10.0.2.2:3000/asema/' + userInput1);
         const json = await response.json();
         setHaut(json);
         setVirhe('');
@@ -24,6 +27,15 @@ export default function TrainListing({ navigation, route }) {
         setVirhe('Haku ei onnistunut');
     }
   }
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      haeJunatAsemalle(userInput);
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     haeJunatAsemalle();

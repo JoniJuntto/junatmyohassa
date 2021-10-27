@@ -5,6 +5,7 @@ import styles from '../styles/Styles';
 import { SearchBar } from 'react-native-elements';
 
 
+
 export default function Home({ navigation }) {
 
     const [inputText, setInputText] = useState('')
@@ -27,6 +28,7 @@ export default function Home({ navigation }) {
                 title="Go to stationlisting"
                 onPress={() => {
                     /* Navigate to the Listing route with param from TextInput */
+                    console.log(inputText)
                     navigation.navigate('Station', {
                         userInput: inputText,
                     });
