@@ -6,7 +6,7 @@ import Map from '../components/Map';
 
 export default function TrainListing({ navigation, route }) {
 
-  const { otherParam } = route.params;
+  const { userInput } = route.params;
 
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
@@ -14,7 +14,7 @@ export default function TrainListing({ navigation, route }) {
   const haeKaikkiJunat = async () => {
     try {
       const response = await
-        fetch('http://10.0.2.2:3000/graphfetch/' + JSON.stringify(otherParam));
+        fetch('http://10.0.2.2:3000/graphfetch/' + JSON.stringify(userInput));
       const json = await response.json();
       setHaut(json);
       console.log(json);
@@ -38,7 +38,7 @@ export default function TrainListing({ navigation, route }) {
     <View style={styles.container}>
       <Text>Tässä junalistausta</Text>
       {/*This is the the data that came from Home.js :) */}
-      <Text>{JSON.stringify(otherParam)}</Text>
+      <Text>{JSON.stringify(userInput)}</Text>
       <List list={haut} />
       <Map />
     </View>

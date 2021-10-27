@@ -6,16 +6,16 @@ import Map from '../components/Map';
 
 export default function TrainListing({ navigation, route }) {
 
-  const { itemId, otherParam } = route.params;
+  const { userInput } = route.params;
 
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
 
   const haeJunatAsemalle = async () => {
     try {
-        console.log(otherParam);
+        console.log(userInput);
         const response = await
-          fetch('http://10.0.2.2:3000/asema/' + otherParam);
+          fetch('http://10.0.2.2:3000/asema/' + userInput);
         const json = await response.json();
         setHaut(json);
         setVirhe('');
@@ -39,7 +39,7 @@ export default function TrainListing({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text>Tässä junat jotka menevät asemalta: {otherParam}</Text>
+      <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
       <List list={haut} />
     </View>
   );
