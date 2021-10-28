@@ -8,17 +8,18 @@ import { useFocusEffect } from '@react-navigation/native';
 
 export default function TrainListing({ navigation, route }) {
 
+  //MIKSI TÄMÄ EI PÄIVITY!!!!!
   const { userInput } = route.params;
 
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
 
 
-  const haeJunatAsemalle = async (userInput1) => {
+  const haeJunatAsemalle = async () => {
     try {
         console.log(userInput + "async");
         const response = await
-          fetch('http://10.0.2.2:3000/asema/' + userInput1);
+          fetch('http://10.0.2.2:3000/asema/' + userInput);
         const json = await response.json();
         setHaut(json);
         setVirhe('');
@@ -30,16 +31,12 @@ export default function TrainListing({ navigation, route }) {
 
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      haeJunatAsemalle(userInput);
+      haeJunatAsemalle()
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
-
-  useEffect(() => {
-    haeJunatAsemalle();
-  }, []);
 
   //If there is a problem with fetch, it will just show error text on screen
   if (virhe) {
