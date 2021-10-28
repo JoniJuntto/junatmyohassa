@@ -7,15 +7,17 @@ import { useNavigation } from '@react-navigation/native';
 export default function List(props) {
     const navigation = useNavigation();
 
-    const onInfoPress = () =>{
-        navigation.navigate('TrainInfo');
-    }
-
-    console.log(props.list);
     const Item = ({ title }) => (
         <Card containerStyle={styles.card}>
           <Text>{title.commuterLineID}</Text>
-          <Icon name='info' onPress={onInfoPress}/>
+          <Icon name='info' onPress={()=>{
+            navigation.navigate('TrainInfo', {
+              ID: title.commuterLineID,
+              date: title.departureDate,
+              dif: title.scheduledTime,
+              title: title
+          });
+          }}/>
         </Card>
          
       );
@@ -26,10 +28,7 @@ export default function List(props) {
         <FlatList
         data={props.list}
         renderItem={renderItem}
-        keyExtractor={item => item.trainNumber}
+        keyExtractor={item => item.trainNumber.toString()}
       />
     );
 }
-
-//Ensin lista josta timetavblerows josta 
-//haetaan kaikki junan pysäkit josta katsotaan missä station shortcode on annetttu parametri

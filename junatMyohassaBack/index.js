@@ -32,7 +32,6 @@ app.get("/graphfetch/:id", async (req, res) => {
   const id = req.params.id;
 
   const query = `
-
 {
   trainsByDepartureDate(departureDate: "${finalform}", 
     where: {timeTableRows:{contains:{station:{shortCode:{equals:"${id}"}}}}}
@@ -101,4 +100,6 @@ app.get("/asema/:asema/", async (req, res) => {
     res.json(error);
   }
 });
+
 app.listen(3000, () => console.log("listening at 3000"));
+

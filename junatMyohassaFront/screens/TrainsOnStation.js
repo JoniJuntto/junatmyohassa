@@ -3,19 +3,24 @@ import { View, Text } from 'react-native';
 import List from '../components/List';
 import styles from '../styles/Styles';
 import Map from '../components/Map';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 export default function TrainListing({ navigation, route }) {
 
-  const { itemId, otherParam } = route.params;
+  //MIKSI TÄMÄ EI PÄIVITY!!!!!
+  const { userInput, pressed } = route.params;
 
   const [haut, setHaut] = useState([]);
   const [virhe, setVirhe] = useState('');
+  
+
 
   const haeJunatAsemalle = async () => {
     try {
-        console.log(otherParam);
+        console.log(userInput + "async");
         const response = await
-          fetch('http://10.0.2.2:3000/asema/' + otherParam);
+          fetch('http://10.0.2.2:3000/asema/' + userInput);
         const json = await response.json();
         setHaut(json);
         setVirhe('');
@@ -25,9 +30,9 @@ export default function TrainListing({ navigation, route }) {
     }
   }
 
-  useEffect(() => {
+  useEffect(() =>{
     haeJunatAsemalle();
-  }, []);
+  },[pressed]);
 
   //If there is a problem with fetch, it will just show error text on screen
   if (virhe) {
@@ -39,7 +44,7 @@ export default function TrainListing({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text>Tässä junat jotka menevät asemalta: {otherParam}</Text>
+      <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
       <List list={haut} />
     </View>
   );
