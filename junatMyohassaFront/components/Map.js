@@ -16,6 +16,8 @@ export default function Map(props) {
     const [windowWidth, setWindonwWidth] = useState(Dimensions.get('window').width);
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
+    const [haut, setHaut] = useState([]);
+    const [virhe, setVirhe] = useState('');
 
     //This is called by the useEffect when the screen starts
     const getLocation = async () => {
@@ -27,12 +29,30 @@ export default function Map(props) {
 
         let location = await Location.getCurrentPositionAsync({});
         setLocation(location);
-        setMarkerLatitude(location.coords.latitude);
-        setMarkerLongitude(location.coords.longitude);
     }
+
+
+    const haeJunanSijainti = async () => {
+        try {
+            console.log(props.data.trainNumber);
+            const response = await
+              fetch('http://10.0.2.2:3000/sijainti/' + props.data.trainNumber);
+            const json = await response.json();
+            var haut = json;
+            setMarkerLatitude(haut[0].location.coordinates[1]);
+            setMarkerLongitude(haut[0].location.coordinates[0]);
+            console.log(haut[0].location.coordinates)
+            setVirhe('');
+        } catch (error) {
+            console.log(error)
+            setHaut([]);
+            setVirhe('Haku ei onnistunut');
+        }
+      }
 
     useEffect(() => {
         getLocation();
+        haeJunanSijainti();
     }, [locationCheck]);
 
     let text = 'Waiting..';
@@ -53,28 +73,35 @@ export default function Map(props) {
         );
     }
 
+    const log = () =>{
+        console.log(props.data.trainNumber)
+    }
+    
     return (
-        <MapView
-            //Makes the map as large as it can be
-            width={windowWidth}
-            height={windowHeight}
-            flex={1}
-            borderWidth={1}
-            borderColor={'black'}
+        <View>
+            <Button title="name" onPress={log}/>
+            <MapView
+                //Makes the map as large as it can be
+                width={windowWidth}
+                height={windowHeight}
+                //flex={1}
+                borderWidth={1}
+                borderColor={'black'}
 
-            //Sets the lat and long where the map is located and deltas
-            region={{
-                latitude: regionLat,
-                longitude: regionLng,
-                latitudeDelta: 3.0,
-                longitudeDelta: 3.0,
-            }}
-        >
-            <Marker coordinate={{
-                latitude: markerLatitude,
-                longitude: markerLongitude
-            }} title='Your location' />
-        </MapView>
+                //Sets the lat and long where the map is located and deltas
+                region={{
+                    latitude: regionLat,
+                    longitude: regionLng,
+                    latitudeDelta: 3.0,
+                    longitudeDelta: 3.0,
+                }}
+            >
+                <Marker coordinate={{
+                    latitude: markerLatitude,
+                    longitude: markerLongitude
+                }} title='Your location' />
+            </MapView>
+        </View>
 
     );
 }
