@@ -3,14 +3,35 @@ import TrainListing from './screens/TrainListing';
 import TrainsOnStation from './screens/TrainsOnStation';
 import TrainInfo from './screens/TrainInfo';
 import * as React from 'react';
+import {useEffect} from 'react'; 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import Profile from './screens/Profile';
 import {  AntDesign } from '@expo/vector-icons';
+import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-Permissions';
 
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+
+  useEffect(() => {
+    registerForPushNotification().then(token => console.log(token)).catch(err => console.log(Err))
+    },[])
+
+  async function registerForPushNotifications() {
+    const {status} = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    if (status != 'granted') {
+      const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+    }
+    if (status != 'granted') {
+      alert('Fail to get the push token');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    return;
+  }
+
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
