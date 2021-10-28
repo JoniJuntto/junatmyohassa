@@ -32,6 +32,3 @@ export default function List(props) {
       />
     );
 }
-
-//Ensin lista josta timetavblerows josta 
-//haetaan kaikki junan pysäkit josta katsotaan missä station shortcode on annetttu parametri

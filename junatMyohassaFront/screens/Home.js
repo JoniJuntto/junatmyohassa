@@ -9,6 +9,7 @@ import { SearchBar } from 'react-native-elements';
 export default function Home({ navigation }) {
 
     const [inputText, setInputText] = useState('')
+    const [pressed, setPressed] = useState(0);
 
     
 
@@ -27,10 +28,12 @@ export default function Home({ navigation }) {
             <Button
                 title="Go to stationlisting"
                 onPress={() => {
+                    setPressed(pressed + 1 );
                     /* Navigate to the Listing route with param from TextInput */
                     console.log(inputText)
                     navigation.navigate('Station', {
                         userInput: inputText,
+                        pressed: pressed,
                     });
                 }}
             />
