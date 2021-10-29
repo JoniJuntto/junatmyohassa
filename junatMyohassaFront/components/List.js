@@ -10,6 +10,7 @@ export default function List(props) {
     const Item = ({ title }) => (
         <Card containerStyle={styles.card}>
           <Text>{title.commuterLineID}</Text>
+          <Text>{title.trainNumber}</Text>
           <Icon name='info' onPress={()=>{
             navigation.navigate('TrainInfo', {
               ID: title.commuterLineID,
