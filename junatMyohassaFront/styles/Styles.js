@@ -24,6 +24,7 @@ export default StyleSheet.create({
         flex: 1,
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
+        ...StyleSheet.absoluteFillObject,
     },
     txt:{
         color: 'red'

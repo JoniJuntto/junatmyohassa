@@ -101,5 +101,24 @@ app.get("/asema/:asema/", async (req, res) => {
   }
 });
 
+/* Hakee junan sijainnin junan numerolla */
+app.get("/sijainti/:junanumero", async (req, res) => {
+  const junanumero = req.params.junanumero;
+  console.log(req.params);
+  console.log("Trying to get trains location")
+
+  try {
+    const response = await fetch(`
+    https://rata.digitraffic.fi/api/v1/train-locations/latest/${junanumero}`);
+    const json = await response.json();
+    res.json(json);
+    console.log("Train location received " + json[0].location.coordinates);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+
+
 app.listen(3000, () => console.log("listening at 3000"));
 
