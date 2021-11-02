@@ -9,11 +9,47 @@ import { NavigationContainer } from '@react-navigation/native';
 import Profile from './screens/Profile';
 import {  AntDesign } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-Permissions';
+import * as Permissions from 'expo-permissions';
+import Constants from "expo-constants"
 
 const Drawer = createDrawerNavigator();
 
+
+
 export default function App() {
+
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+  
+    return token;
+
+  }
+
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName="Home">
@@ -36,17 +72,6 @@ export default function App() {
               drawerIcon: ({ tintColor }) => <AntDesign name="profile" size={30} color={tintColor} />
             }}
         />
-        <Drawer.Screen
-          name="Dropdown"
-          component={DropDown}
-          options={
-            {
-              drawerLabel: "Profile",
-              drawerIcon: ({ tintColor }) => <AntDesign name="profile" size={30} color={tintColor} />
-            }}
-        />
-       
-
 
 
         <Drawer.Screen
