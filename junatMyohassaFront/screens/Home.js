@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Button, Text } from 'react-native';
 import Map from '../components/Map'
 import styles from '../styles/Styles';
-import { SearchBar } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ButtonGroup } from 'react-native-elements';
 
 
 
@@ -10,7 +11,23 @@ export default function Home({ navigation }) {
 
     const [inputText, setInputText] = useState('')
     const [pressed, setPressed] = useState(0);
+    const [station, setValue] = useState('');
 
+    const getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('@storage_Key')
+          if(value !== null) {
+            // value previously stored
+            setValue(value);
+          }
+        } catch(e) {
+          // error reading value
+        }
+      }
+      
+      useEffect(() => {
+        getData();
+      }, []);
     
 
     return (
@@ -37,6 +54,18 @@ export default function Home({ navigation }) {
                     });
                 }}
             />
+            <Button
+                title="Use your favourite station"
+                onPress={() => {
+                    setPressed(pressed + 1 );
+                    /* Navigate to the Listing route with param from async storage */
+                    navigation.navigate('Station', {
+                        userInput: station,
+                        pressed: pressed,
+                    });
+                }}
+            />
+            
         </View>
     );
 }
