@@ -12,7 +12,7 @@ export default function List(props) {
     if (Array.isArray(title.timeTableRows) === true) {
       return (
         <Card containerStyle={styles.card}>
-          <Text>{title.commuterLineid}</Text>
+          <Text>{title.commuterLineID}</Text>
           <Text>{title.timeTableRows[0].scheduledTime.slice(11, 16)}</Text>
           <Icon
             name="info"
@@ -26,6 +26,10 @@ export default function List(props) {
             }}
           />
         </Card>
+      );
+    }else{
+      return(
+        <Text></Text>
       );
     }
   };
