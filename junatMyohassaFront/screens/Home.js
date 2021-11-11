@@ -11,7 +11,7 @@ import * as Location from 'expo-location';
 
 
 export default function Home({ navigation }) {
-    
+
     const [location, setLocation] = useState(null);
     const [locationCheck, setLocationCheck] = useState(0);
     const [errorMsg, setErrorMsg] = useState('');
@@ -31,38 +31,45 @@ export default function Home({ navigation }) {
         }
     }
 
-    useEffect(() => {
-        (async () => {
-          let { status } = await Location.requestForegroundPermissionsAsync();
-          if (status !== 'granted') {
-            console.log("Fetching location")
+    //This is called by the useEffect when the screen starts
+    const getLocation = async () => {
+        console.log("jej")
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            console.log("not granted");
             setErrorMsg('Permission to access location was denied');
             return;
-          }
-    
-          let location = await Location.getCurrentPositionAsync({});
-          setLocation(location);
-          console.log(location);
-        })();
-      }, []);
-    
-      let text = 'Waiting..';
-      if (errorMsg) {
-        text = errorMsg;
-      } else if (location) {
-        text = JSON.stringify(location);
-      }
+        }
+
+        try {
+            console.log("Trying")
+            let location = await Location.getCurrentPositionAsync({});
+            setLocation(location);
+            console.log("Tried");
+            console.log(location);
+        } catch (error) {
+            console.log("error")
+        }
+
+    }
 
     useEffect(() => {
         getData();
+    }, []);
 
-
-    }, [locationCheck]);
+    let text = 'Waiting..';
+    if (errorMsg) {
+        text = errorMsg;
+    } else if (location) {
+        text = JSON.stringify(location);
+    }
 
 
     return (
         <View style={styles.container}>
-
+            <View style={styles.container}>
+                <Text style={styles.paragraph}>{text}</Text>
+            </View>
             <TextInput
                 textAlign={'center'}
                 style={styles.input}
@@ -71,7 +78,7 @@ export default function Home({ navigation }) {
                 onChangeText={text => setInputText(text)} value={inputText}
                 placeholder="Find a train or station"
             />
-            <NearestStations location={location}/>
+            <NearestStations location={location} />
             <Button
                 title="Go to stationlisting"
                 onPress={() => {
@@ -84,6 +91,7 @@ export default function Home({ navigation }) {
                     });
                 }}
             />
+            <Button onPress={getLocation} title='heh' />
             <Button
                 title="Use your favourite station"
                 onPress={() => {

@@ -3,6 +3,9 @@ import { View, Button, Text } from "react-native";
 
 export default function NearestStations(props) {
 
+    if(!props.location){
+        return(<Text>No access to location</Text>);
+    }else{console.log(props.location)}
 
     const location = props.location;
 
