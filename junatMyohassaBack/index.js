@@ -118,6 +118,19 @@ app.get("/sijainti/:junanumero", async (req, res) => {
   }
 });
 
+/* Hakee kaikki asemat */
+app.get("/kaikkiasemat", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://rata.digitraffic.fi/api/v1/metadata/stations`
+    );
+    const json = await response.json();
+    res.json(json);
+    console.log("tämä tapahtui");
+  } catch (error) {
+    res.json(error);
+  }
+});
 
 
 app.listen(3000, () => console.log("listening at 3000"));
