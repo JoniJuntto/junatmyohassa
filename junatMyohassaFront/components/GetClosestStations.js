@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 18,
         height: 44,
+        marginLeft: 30
     },
 });
 
@@ -100,13 +101,15 @@ export default function GetClosestStations({ location }) {
                 data={closestStations}
                 renderItem={({ item }) =>
                     <View style={{display: 'flex', flexDirection: 'row'}}>
-                        <Text style={styles.item}>{item.stationName}</Text>
                         <IconButton
+                            style={{position: 'absolute'}}
                             icon="heart"
                             color={Colors.red500}
                             size={24}
                             onPress={() => { storeData(item) }}
                         />
+                        <Text style={styles.item}>{item.stationName}</Text>
+                        
                     </View>}
             />
         </View>
