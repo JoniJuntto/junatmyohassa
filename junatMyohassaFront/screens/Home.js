@@ -16,6 +16,7 @@ export default function Home({ navigation }) {
     const [haut, setHaut] = useState('');
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
+
   
     useEffect(() => {
       (async () => {
@@ -27,7 +28,7 @@ export default function Home({ navigation }) {
   
         let location = await Location.getCurrentPositionAsync({});
         setLocation(location);
-        
+
         //TÄMÄ ON KORJAUS KUN EMULAATTORI VIE KOORDINAATIT CALIFORNIAAN
         if(location.coords.longitude < -120.084){
             console.log("Emulator coords")
@@ -42,6 +43,7 @@ export default function Home({ navigation }) {
         try {
           const value = await AsyncStorage.getItem('station')
           console.log("got a " + value + " from async")
+          setValue(value)
           if(value !== null) {
             // value previously stored
             setValue(value);
@@ -63,8 +65,23 @@ export default function Home({ navigation }) {
 
     return (
         <View style={styles.container}>
-          
+            
+          <View>
           <GetClosestStations location={location} /> 
+          
+            <Button
+                title="Use your favourite station"
+                onPress={() => {
+                    setPressed(pressed + 1 );
+                    /* Navigate to the Listing route with param from async storage */
+                    navigation.navigate('Station', {
+                        userInput: station,
+                        pressed: pressed,
+                    });
+                }}
+            />
+            </View>
+            <View>
             <TextInput
                 textAlign={'center'}
                 style={styles.input}
@@ -86,17 +103,8 @@ export default function Home({ navigation }) {
                     });
                 }}
             />
-            <Button
-                title="Use your favourite station"
-                onPress={() => {
-                    setPressed(pressed + 1 );
-                    /* Navigate to the Listing route with param from async storage */
-                    navigation.navigate('Station', {
-                        userInput: station,
-                        pressed: pressed,
-                    });
-                }}
-            />
+            </View>
+
             
         </View>
     );

@@ -21,7 +21,6 @@ export default function TrainListing({ navigation, route }) {
       );
       const json = await response.json();
       setHaut(json);
-      console.log(json)
       setVirhe("");
     } catch (error) {
       setHaut([]);
@@ -34,8 +33,6 @@ export default function TrainListing({ navigation, route }) {
  
    try {
      await AsyncStorage.setItem('station', value)
-     const kikkeli = await AsyncStorage.getItem('station');
-     console.log(kikkeli);
    } catch (e) {
      console.log(e);
      // saving error

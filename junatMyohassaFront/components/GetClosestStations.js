@@ -2,6 +2,7 @@ import { View, Text, Button, FlatList, StyleSheet } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { forEach } from "lodash";
 import { IconButton, Colors } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
     container: {
@@ -79,10 +80,13 @@ export default function GetClosestStations({ location }) {
         const elementLat = element.latitude;
         const long = location.coords.longitude;
         const lat = location.coords.latitude;
-        console.log(lat)
         const distance = getDistanceFromLatLonInKm(lat, long, elementLat, elementLong)
         if (distance < 10) {
+            if(closestStations.length < 11){
             closestStations.push(element)
+            }else{
+                console.log("täynnä")
+            }
         }
         //37.4220083 latdeltaplus
     }
@@ -92,11 +96,10 @@ export default function GetClosestStations({ location }) {
         setLoading(false)
     }
 
-    console.log(closestStations);
 
     return (
         <View style={{ height: 300 }}>
-            <Text>Asemat 10 kilometrin sisällä sinusta</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>10 sinua lähintä asemaa:</Text>
             <FlatList
                 data={closestStations}
                 renderItem={({ item }) =>
@@ -106,7 +109,7 @@ export default function GetClosestStations({ location }) {
                             icon="heart"
                             color={Colors.red500}
                             size={24}
-                            onPress={() => { storeData(item) }}
+                            onPress={() => { storeData(item.stationName) }}
                         />
                         <Text style={styles.item}>{item.stationName}</Text>
                         
