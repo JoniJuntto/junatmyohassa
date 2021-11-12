@@ -4,7 +4,8 @@ import Map from '../components/Map'
 import styles from '../styles/Styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ButtonGroup } from 'react-native-elements';
-
+import * as Location from 'expo-location';
+import GetClosestStations from '../components/GetClosestStations';
 
 
 export default function Home({ navigation }) {
@@ -13,6 +14,28 @@ export default function Home({ navigation }) {
     const [pressed, setPressed] = useState(0);
     const [station, setValue] = useState('');
     const [haut, setHaut] = useState('');
+    const [location, setLocation] = useState(null);
+    const [errorMsg, setErrorMsg] = useState(null);
+  
+    useEffect(() => {
+      (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+          return;
+        }
+  
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+        
+        //TÄMÄ ON KORJAUS KUN EMULAATTORI VIE KOORDINAATIT CALIFORNIAAN
+        if(location.coords.longitude < -120.084){
+            console.log("Emulator coords")
+            location.coords.longitude = 24.951468537760
+            location.coords.latitude = 60.1807317519
+        }
+      })();
+    }, []);
 
     const getData = async () => {
         console.log("Getting the station from async...")
@@ -41,6 +64,7 @@ export default function Home({ navigation }) {
     return (
         <View style={styles.container}>
           
+          <GetClosestStations location={location} /> 
             <TextInput
                 textAlign={'center'}
                 style={styles.input}

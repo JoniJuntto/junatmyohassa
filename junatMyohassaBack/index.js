@@ -119,6 +119,21 @@ app.get("/sijainti/:junanumero", async (req, res) => {
 });
 
 
+app.get("/asemat", async (req, res) => {
+  console.log(req.params);
+
+  try {
+    const response = await fetch(`https://rata.digitraffic.fi/api/v1/metadata/stations
+    `);
+    const json = await response.json();
+    res.json(json);
+    console.log("Stations received ");
+  } catch (error) {
+    res.json(error);
+    console.log(error)
+  }
+});
+
 
 app.listen(3000, () => console.log("listening at 3000"));
 
