@@ -12,22 +12,26 @@ export default function Home({ navigation }) {
     const [inputText, setInputText] = useState('')
     const [pressed, setPressed] = useState(0);
     const [station, setValue] = useState('');
+    const [haut, setHaut] = useState('');
 
     const getData = async () => {
+        console.log("Getting the station from async...")
         try {
-          const value = await AsyncStorage.getItem('@storage_Key')
+          const value = await AsyncStorage.getItem('asema')
+          console.log("got a " + value + " from async")
           if(value !== null) {
             // value previously stored
             setValue(value);
           }
         } catch(e) {
+            console.log(e)
           // error reading value
         }
       }
       
       useEffect(() => {
         getData();
-      }, []);
+      }, [station]);
     
 
     return (

@@ -4,6 +4,7 @@ import List from "../components/List";
 import styles from "../styles/Styles";
 import Map from "../components/Map";
 import { useFocusEffect } from "@react-navigation/native";
+import { IconButton, Colors } from 'react-native-paper';
 
 export default function TrainListing({ navigation, route }) {
   //MIKSI TÄMÄ EI PÄIVITY!!!!!
@@ -16,16 +17,30 @@ export default function TrainListing({ navigation, route }) {
     try {
       console.log(userInput + "async");
       const response = await fetch(
-        "http://192.168.1.104:3000/graphfetch/" + userInput
+        "http://192.168.1.102:3000/graphfetch/" + userInput
       );
       const json = await response.json();
       setHaut(json);
+      console.log(json)
       setVirhe("");
     } catch (error) {
       setHaut([]);
-      setVirhe("Haku ei onnistunut");
+      setVirhe(error);
     }
   };
+
+  const storeData = async () => {
+    let value = trainNr.toString();
+ 
+   try {
+     await AsyncStorage.setItem('station', value)
+     const kikkeli = await AsyncStorage.getItem('station');
+     console.log(kikkeli);
+   } catch (e) {
+     console.log(e);
+     // saving error
+   }
+ }
 
   useEffect(() => {
     haeJunatAsemalle();
@@ -42,6 +57,13 @@ export default function TrainListing({ navigation, route }) {
   return (
     <View style={styles.container}>
       <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
+      <IconButton
+        icon="heart"
+        color={Colors.red500}
+        size={24}
+        onPress={storeData}
+      />
+      <Text>Lisää asema suosikkeihin</Text>
       <List list={haut} />
     </View>
   );
