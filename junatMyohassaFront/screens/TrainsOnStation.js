@@ -16,10 +16,9 @@ export default function TrainListing({ navigation, route }) {
     try {
       console.log(userInput + "async");
       const response = await fetch(
-        "http://10.0.2.2:3000/graphfetch/" + userInput
+        "http://192.168.1.104:3000/graphfetch/" + userInput
       );
       const json = await response.json();
-      console.log(json);
       setHaut(json);
       setVirhe("");
     } catch (error) {
