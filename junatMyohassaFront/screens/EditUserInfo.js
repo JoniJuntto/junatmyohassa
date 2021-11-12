@@ -1,41 +1,49 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { View, TextInput, Text } from "react-native";
 import { Button } from "react-native-elements";
 import styles from "../styles/Styles";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EditUserInfo(){
-
-        
-const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@storage_Key')
-      if(value !== null) {
-        // value previously stored
-        console.log(value);
-        return value;
-      }
-    } catch(e) {
-      // error reading value
-      return ""
-    }
-  }
-    const [station, onChangeStation] = useState(getData());
+  const [station, onChangeStation] = useState('');
+  const [favoriteStation, setFavoriteStation] = useState('');
+  const [favoriteTrain, setFavoriteTrain] = useState('');
 
     const storeData = async () => {
+      console.log("Saving asema")
         try {
-          await AsyncStorage.setItem('@storage_Key', station)
+          await AsyncStorage.setItem('station', station)
+          console.log("Asema " + station)
         } catch (e) {
           // saving error
+          console.log(e);
         }
       }
 
+      const getData = async () =>{
+        try {
+          const resTrain = await AsyncStorage.getItem('train');
+          setFavoriteTrain(resTrain);
+          console.log(resTrain);
+          const resStation = await AsyncStorage.getItem('station');
+          setFavoriteStation(resStation);
+          console.log(resStation);
+        } catch (error) {
+          console.log(error)
+        }
+      }
 
+      useEffect(() => {
+        getData();
+      }, []);
 
 
     return(
         <View>
-        <Text>your station</Text>
+          <Text>Your favorite station: {favoriteStation}</Text>
+          <Text>Your favorite train: {favoriteTrain}</Text>
+        <Text></Text>
+        <Text>Change favorite station</Text>
         <TextInput
             style={styles.input}
             onChangeText={onChangeStation}
