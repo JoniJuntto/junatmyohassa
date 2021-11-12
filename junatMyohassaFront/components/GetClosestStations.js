@@ -1,11 +1,27 @@
-import { View, Text, Button, FlatList } from "react-native";
+import { View, Text, Button, FlatList, StyleSheet } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { forEach } from "lodash";
+import { IconButton, Colors } from 'react-native-paper';
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 22,
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+    },
+});
 
 export default function GetClosestStations({ location }) {
     const [hauts, setHaut] = useState('');
     const [virhe, setVirhe] = useState('');
-    const closestStations = [];
+    const [closestStations, setClosestStations] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+
 
     const getStations = async () => {
         try {
@@ -25,7 +41,7 @@ export default function GetClosestStations({ location }) {
 
     useEffect(() => {
         getStations();
-    }, []);
+    }, [location]);
 
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         var R = 6371; // Radius of the earth in km
@@ -45,38 +61,54 @@ export default function GetClosestStations({ location }) {
         return deg * (Math.PI / 180)
     }
 
+    const storeData = async (item) => {
+        const value = item.toString();
+        try {
+            await AsyncStorage.setItem('station', value)
+            const print = await AsyncStorage.getItem('station');
+            console.log(print);
+        } catch (e) {
+            console.log(e);
+            // saving error
+        }
+    }
+
     const locationCheck = (element) => {
         const elementLong = element.longitude;
         const elementLat = element.latitude;
         const long = location.coords.longitude;
         const lat = location.coords.latitude;
+        console.log(lat)
         const distance = getDistanceFromLatLonInKm(lat, long, elementLat, elementLong)
-        if (distance < 5) {
+        if (distance < 10) {
             closestStations.push(element)
         }
         //37.4220083 latdeltaplus
     }
-    const doIt = (haut) => {
-        haut.forEach(locationCheck);
-        console.log(closestStations[0].stationName);
+    const doIt = async (haut) => {
+        setLoading(true)
+        await haut.forEach(locationCheck);
+        setLoading(false)
     }
-    const Item = ({ title }) => {
-          return (
-            <Card>
-              <Text>{title.stationName}</Text>
-            </Card>
-          );
-        
-      };
 
-    const renderItem = ({ item }) => <Item title={item} />;
+    console.log(closestStations);
 
     return (
-        <View style={{height: 200}}>
-            <Text>Heh</Text>
-            {closestStations.map((station, index) => (
-            <Text>{station.stationName}</Text>
-    ))}
+        <View style={{ height: 300 }}>
+            <Text>Asemat 10 kilometrin sisällä sinusta</Text>
+            <FlatList
+                data={closestStations}
+                renderItem={({ item }) =>
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <Text style={styles.item}>{item.stationName}</Text>
+                        <IconButton
+                            icon="heart"
+                            color={Colors.red500}
+                            size={24}
+                            onPress={() => { storeData(item) }}
+                        />
+                    </View>}
+            />
         </View>
     );
 }
