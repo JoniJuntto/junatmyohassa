@@ -6,11 +6,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EditUserInfo(){
   const [station, onChangeStation] = useState('');
+  const [favoriteStation, setFavoriteStation] = useState('');
+  const [favoriteTrain, setFavoriteTrain] = useState('');
 
     const storeData = async () => {
       console.log("Saving asema")
         try {
-          await AsyncStorage.setItem('asema', station)
+          await AsyncStorage.setItem('station', station)
           console.log("Asema " + station)
         } catch (e) {
           // saving error
@@ -18,10 +20,30 @@ export default function EditUserInfo(){
         }
       }
 
+      const getData = async () =>{
+        try {
+          const resTrain = await AsyncStorage.getItem('train');
+          setFavoriteTrain(resTrain);
+          console.log(resTrain);
+          const resStation = await AsyncStorage.getItem('station');
+          setFavoriteStation(resStation);
+          console.log(resStation);
+        } catch (error) {
+          console.log(error)
+        }
+      }
+
+      useEffect(() => {
+        getData();
+      }, []);
+
 
     return(
         <View>
-        <Text>your station</Text>
+          <Text>Your favorite station: {favoriteStation}</Text>
+          <Text>Your favorite train: {favoriteTrain}</Text>
+        <Text></Text>
+        <Text>Change favorite station</Text>
         <TextInput
             style={styles.input}
             onChangeText={onChangeStation}

@@ -5,6 +5,7 @@ import styles from "../styles/Styles";
 import Map from "../components/Map";
 import { useFocusEffect } from "@react-navigation/native";
 import { IconButton, Colors } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TrainListing({ navigation, route }) {
   //MIKSI TÄMÄ EI PÄIVITY!!!!!
@@ -15,7 +16,6 @@ export default function TrainListing({ navigation, route }) {
 
   const haeJunatAsemalle = async () => {
     try {
-      console.log(userInput + "async");
       const response = await fetch(
         "http://192.168.1.102:3000/graphfetch/" + userInput
       );
@@ -30,7 +30,7 @@ export default function TrainListing({ navigation, route }) {
   };
 
   const storeData = async () => {
-    let value = trainNr.toString();
+    let value = userInput.toString();
  
    try {
      await AsyncStorage.setItem('station', value)

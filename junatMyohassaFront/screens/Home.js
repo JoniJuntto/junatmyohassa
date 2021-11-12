@@ -17,17 +17,21 @@ export default function Home({ navigation }) {
     const getData = async () => {
         console.log("Getting the station from async...")
         try {
-          const value = await AsyncStorage.getItem('asema')
+          const value = await AsyncStorage.getItem('station')
           console.log("got a " + value + " from async")
           if(value !== null) {
             // value previously stored
             setValue(value);
           }
+          const value2 = await AsyncStorage.getItem('train')
+          console.log(value2)
         } catch(e) {
             console.log(e)
           // error reading value
         }
       }
+    
+      
       
       useEffect(() => {
         getData();
