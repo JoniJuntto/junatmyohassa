@@ -1,4 +1,4 @@
-import { View, Text, Button, FlatList, StyleSheet } from "react-native";
+import { View, Text, Button, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { forEach } from "lodash";
 import { IconButton, Colors } from 'react-native-paper';
@@ -26,9 +26,10 @@ export default function GetClosestStations({ location }) {
 
 
     const getStations = async () => {
+        setLoading(true);
         try {
             const response = await fetch(
-                "http://192.168.1.102:3000/asemat/"
+                "http://172.20.10.3:3000/asemat/"
             );
             const json = await response.json();
             setHaut(json);
@@ -37,7 +38,9 @@ export default function GetClosestStations({ location }) {
         } catch (error) {
             setHaut([]);
             setVirhe(error);
+            console.log(error)
         }
+        setLoading(false);
     }
 
 
@@ -88,18 +91,16 @@ export default function GetClosestStations({ location }) {
                 console.log("täynnä")
             }
         }
-        //37.4220083 latdeltaplus
     }
     const doIt = async (haut) => {
-        setLoading(true)
         await haut.forEach(locationCheck);
-        setLoading(false)
     }
 
 
     return (
         <View style={{ height: 300 }}>
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>10 sinua lähintä asemaa:</Text>
+            <ActivityIndicator animating={loading} size="large" color="#00ff00" />
             <FlatList
                 data={closestStations}
                 renderItem={({ item }) =>

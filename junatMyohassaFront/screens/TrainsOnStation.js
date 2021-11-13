@@ -21,7 +21,7 @@ export default function TrainListing({ navigation, route }) {
   const getStations = async () => {
     try {
       const response = await fetch(
-        "http://192.168.1.102:3000/asemat/"
+        "http://172.20.10.3:3000/asemat/"
       );
       const json = await response.json();
       setHautAsema(json);

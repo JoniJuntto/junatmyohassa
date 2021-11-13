@@ -17,7 +17,8 @@ export default function Map(props) {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [virhe, setVirhe] = useState('');
-
+    const [haut, setHaut] = useState('');
+    
     //This is called by the useEffect when the screen starts
     const getLocation = async () => {
         let { status } = await Location.requestForegroundPermissionsAsync();
