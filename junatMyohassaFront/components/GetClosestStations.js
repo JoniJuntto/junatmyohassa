@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
 });
 
 export default function GetClosestStations({ location }) {
+    console.log("Getting trains near location " + location.coords.latitude + " " + location.coords.longitude)
     const [hauts, setHaut] = useState('');
     const [virhe, setVirhe] = useState('');
     const [closestStations, setClosestStations] = useState([]);
@@ -28,6 +29,7 @@ export default function GetClosestStations({ location }) {
     const getStations = async () => {
         setLoading(true);
         try {
+            console.log("Fetching stations")
             const response = await fetch(
                 "http://172.20.10.3:3000/asemat/"
             );
@@ -88,11 +90,12 @@ export default function GetClosestStations({ location }) {
             if(closestStations.length < 11){
             closestStations.push(element)
             }else{
-                console.log("täynnä")
+                
             }
         }
     }
     const doIt = async (haut) => {
+        
         await haut.forEach(locationCheck);
     }
 
