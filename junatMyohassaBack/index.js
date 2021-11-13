@@ -118,7 +118,7 @@ app.get("/sijainti/:junanumero", async (req, res) => {
   }
 });
 
-
+//Get all the data for stations
 app.get("/asemat", async (req, res) => {
   console.log(req.params);
 
