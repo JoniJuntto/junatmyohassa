@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import List from "../components/List";
 import styles from "../styles/Styles";
 import Map from "../components/Map";
@@ -12,12 +12,51 @@ export default function TrainListing({ navigation, route }) {
   const { userInput, pressed } = route.params;
 
   const [haut, setHaut] = useState([]);
+  const [hautAsema, setHautAsema] = useState([]);
   const [virhe, setVirhe] = useState("");
+  const [userStationCode, setUserStationCode] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const haeJunatAsemalle = async () => {
+
+  const getStations = async () => {
     try {
       const response = await fetch(
-        "http://192.168.1.102:3000/graphfetch/" + userInput
+        "http://192.168.1.102:3000/asemat/"
+      );
+      const json = await response.json();
+      setHautAsema(json);
+      setVirhe("");
+      return json;
+    } catch (error) {
+      setHautAsema([]);
+      setVirhe(error);
+    }
+  }
+
+  const formatterFn = (element) => {
+
+    if (element.stationName.toLowerCase() === userInput.toLowerCase()) {
+      setUserStationCode(element.stationShortCode);
+      console.log(element.stationShortCode);
+    } else if (element.stationShortCode.toLowerCase() === userInput.toLowerCase()) {
+      setUserStationCode(element.stationShortCode)
+    }
+
+  }
+
+  const haeJunatAsemalle = async () => {
+    setLoading(true);
+
+
+    try {
+      //Get all the stations in Finland
+      const stations = await getStations();
+      //Get stationShortCode from stationName 
+      await stations.forEach(formatterFn);
+
+      //Getting the station that user wanted
+      const response = await fetch(
+        "http://192.168.1.102:3000/graphfetch/" + userStationCode
       );
       const json = await response.json();
       setHaut(json);
@@ -25,19 +64,21 @@ export default function TrainListing({ navigation, route }) {
     } catch (error) {
       setHaut([]);
       setVirhe(error);
+      console.log(error)
     }
+    setLoading(false);
   };
 
   const storeData = async () => {
     let value = userInput.toString();
- 
-   try {
-     await AsyncStorage.setItem('station', value)
-   } catch (e) {
-     console.log(e);
-     // saving error
-   }
- }
+
+    try {
+      await AsyncStorage.setItem('station', value)
+    } catch (e) {
+      console.log(e);
+      // saving error
+    }
+  }
 
   useEffect(() => {
     haeJunatAsemalle();
@@ -53,15 +94,19 @@ export default function TrainListing({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
-      <IconButton
-        icon="heart"
-        color={Colors.red500}
-        size={24}
-        onPress={storeData}
-      />
-      <Text>Lisää asema suosikkeihin</Text>
-      <List list={haut} />
+        <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
+        <IconButton
+          icon="heart"
+          color={Colors.red500}
+          size={24}
+          onPress={storeData}
+        />
+        <Text>Lisää asema suosikkeihin</Text>
+        <ActivityIndicator animating={loading} size="large" color="#00ff00" />
+      {!loading
+        ? <List list={haut} />
+        : <Text></Text>
+      }
     </View>
   );
 }
