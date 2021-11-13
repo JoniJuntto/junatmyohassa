@@ -1,50 +1,17 @@
-import { View, Text, Button, FlatList, StyleSheet } from "react-native";
+import { View, Text, Button, FlatList, StyleSheet, ActivityIndicator } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { forEach } from "lodash";
 import { IconButton, Colors } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingTop: 22,
-    },
-    item: {
-        padding: 10,
-        fontSize: 18,
-        height: 44,
-        marginLeft: 30
-    },
-});
-
-export default function GetClosestStations({ location }) {
-    const [hauts, setHaut] = useState('');
+import styles from '../styles/Styles';
+export default function GetClosestStations({ location, haut }) {
+    
     const [virhe, setVirhe] = useState('');
     const [closestStations, setClosestStations] = useState([]);
     const [loading, setLoading] = useState(false);
 
 
-
-    const getStations = async () => {
-        try {
-            const response = await fetch(
-                "http://192.168.1.102:3000/asemat/"
-            );
-            const json = await response.json();
-            setHaut(json);
-            setVirhe("");
-            doIt(json);
-        } catch (error) {
-            setHaut([]);
-            setVirhe(error);
-        }
-    }
-
-
-    useEffect(() => {
-        getStations();
-    }, [location]);
-
+    //This function calculates distance between two points in kilometres :')
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         var R = 6371; // Radius of the earth in km
         var dLat = deg2rad(lat2 - lat1);  // deg2rad below
@@ -63,6 +30,7 @@ export default function GetClosestStations({ location }) {
         return deg * (Math.PI / 180)
     }
 
+    //Storing station to Async storage
     const storeData = async (item) => {
         const value = item.toString();
         try {
@@ -71,15 +39,16 @@ export default function GetClosestStations({ location }) {
             console.log(print);
         } catch (e) {
             console.log(e);
-            // saving error
         }
     }
+
 
     const locationCheck = (element) => {
         const elementLong = element.longitude;
         const elementLat = element.latitude;
         const long = location.coords.longitude;
         const lat = location.coords.latitude;
+        //Getting distance in kilometers
         const distance = getDistanceFromLatLonInKm(lat, long, elementLat, elementLong)
         if (distance < 10) {
             if(closestStations.length < 11){
@@ -88,18 +57,23 @@ export default function GetClosestStations({ location }) {
                 console.log("täynnä")
             }
         }
-        //37.4220083 latdeltaplus
     }
+    //This function is poorly named, but if I rename it, it breaks everything. Please don't touch
     const doIt = async (haut) => {
         setLoading(true)
-        await haut.forEach(locationCheck);
+            haut.forEach(locationCheck);
         setLoading(false)
     }
+
+    useEffect(() => {
+        doIt(haut);
+      }, [haut]);
 
 
     return (
         <View style={{ height: 300 }}>
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>10 sinua lähintä asemaa:</Text>
+            <ActivityIndicator animating={loading} size="large" color="#00ff00" />
             <FlatList
                 data={closestStations}
                 renderItem={({ item }) =>

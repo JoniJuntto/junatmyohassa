@@ -9,25 +9,22 @@ import { IconButton, Colors } from 'react-native-paper';
 export default function TrainInfo({ route }) {
   const { ID, trainNr, title } = route.params;
 
-  //Funktio, jonka kutsuu nappula, joka lisää train numberin async storageen
- // Tämän voi toteuttaa samanlailla kuin EditUserInfo.js tehdään aseman kohdalla
- const storeData = async () => {
-   let value = trainNr.toString();
+  //Saving train to Async storage
+  const storeData = async () => {
+    let value = trainNr.toString();
 
-  try {
-    await AsyncStorage.setItem('train', value)
-    const kikkeli = await AsyncStorage.getItem('train');
-    console.log(kikkeli);
-  } catch (e) {
-    console.log(e);
-    // saving error
+    try {
+      console.log("Getting train from async");
+      await AsyncStorage.setItem('train', value)
+      console.log("Got " + value + " from async")
+    } catch (e) {
+      console.log(e);
+      // saving error
+    }
   }
-}
 
   return (
     <View>
-      {/* Tähän nappula josta painamalla käyttäjä valitsee junan suosikkeihin */}
-  
       <IconButton
         icon="heart"
         color={Colors.red500}

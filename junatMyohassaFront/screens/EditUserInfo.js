@@ -20,14 +20,16 @@ export default function EditUserInfo(){
         }
       }
 
+      //Getting data from async storage
       const getData = async () =>{
+        console.log("Getting data from async storage to user-info page");
         try {
           const resTrain = await AsyncStorage.getItem('train');
           setFavoriteTrain(resTrain);
-          console.log(resTrain);
+          console.log("Got fata with value " + resTrain);
           const resStation = await AsyncStorage.getItem('station');
           setFavoriteStation(resStation);
-          console.log(resStation);
+          console.log("Got fata with value " + resStation);
         } catch (error) {
           console.log(error)
         }

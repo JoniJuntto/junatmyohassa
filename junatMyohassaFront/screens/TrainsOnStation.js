@@ -9,7 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TrainListing({ navigation, route }) {
   //MIKSI TÄMÄ EI PÄIVITY!!!!!
-  const { userInput, pressed } = route.params;
+  const { userInput, pressed, hautStations } = route.params;
 
   const [haut, setHaut] = useState([]);
   const [hautAsema, setHautAsema] = useState([]);
@@ -17,21 +17,6 @@ export default function TrainListing({ navigation, route }) {
   const [userStationCode, setUserStationCode] = useState('');
   const [loading, setLoading] = useState(false);
 
-
-  const getStations = async () => {
-    try {
-      const response = await fetch(
-        "http://192.168.1.102:3000/asemat/"
-      );
-      const json = await response.json();
-      setHautAsema(json);
-      setVirhe("");
-      return json;
-    } catch (error) {
-      setHautAsema([]);
-      setVirhe(error);
-    }
-  }
 
   const formatterFn = (element) => {
 
@@ -49,14 +34,17 @@ export default function TrainListing({ navigation, route }) {
 
 
     try {
-      //Get all the stations in Finland
-      const stations = await getStations();
+      if (!hautStations) {
+        setLoading(true);
+        return;
+      }
       //Get stationShortCode from stationName 
-      await stations.forEach(formatterFn);
+      await hautStations.forEach(formatterFn);
 
       //Getting the station that user wanted
+      console.log("Getting data from stationshortcode " + userStationCode)
       const response = await fetch(
-        "http://192.168.1.102:3000/graphfetch/" + userStationCode
+        "http://192.168.1.133:3000/graphfetch/" + userStationCode
       );
       const json = await response.json();
       setHaut(json);
@@ -94,19 +82,16 @@ export default function TrainListing({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-        <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
-        <IconButton
-          icon="heart"
-          color={Colors.red500}
-          size={24}
-          onPress={storeData}
-        />
-        <Text>Lisää asema suosikkeihin</Text>
-        <ActivityIndicator animating={loading} size="large" color="#00ff00" />
-      {!loading
-        ? <List list={haut} />
-        : <Text></Text>
-      }
+      <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
+      <IconButton
+        icon="heart"
+        color={Colors.red500}
+        size={24}
+        onPress={storeData}
+      />
+      <Text>Lisää asema suosikkeihin</Text>
+      <ActivityIndicator animating={loading} size="large" color="#00ff00" />
+      <List list={haut} />
     </View>
   );
 }

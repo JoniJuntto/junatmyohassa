@@ -43,5 +43,11 @@ export default StyleSheet.create({
         borderWidth: 1,
         padding: 10,
       },
+      item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+        marginLeft: 30
+    },
 
 });
