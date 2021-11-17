@@ -23,7 +23,6 @@ export default function GetClosestStations({ location, setInputText, pressed, se
     const [loading, setLoading] = useState(false);
 
 
-
     const getStations = async () => {
         setLoading(true);
         try {

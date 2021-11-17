@@ -96,7 +96,7 @@ export default function Home({ navigation }) {
                 keyboardType={'default'}
                 //This is hacky way to get the text from TextInput :D
                 onChangeText={text => setInputText(text)} value={inputText}
-                placeholder="Find a train or station"
+                placeholder="Syötä asema"
             />
 
             <Button

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import { View, Text, ActivityIndicator, Alert } from "react-native";
 import List from "../components/List";
 import styles from "../styles/Styles";
 import { IconButton, Colors } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function TrainListing({ navigation, route }) {
+export default function TrainListing({ route }) {
 
   const { userInput, pressed } = route.params;
   const [haut, setHaut] = useState([]);
@@ -13,6 +13,7 @@ export default function TrainListing({ navigation, route }) {
   const [virhe, setVirhe] = useState("");
   const [userStationCode, setUserStationCode] = useState('');
   const [loading, setLoading] = useState(false);
+  
 
 
   const getStations = async () => {
@@ -43,7 +44,7 @@ export default function TrainListing({ navigation, route }) {
 
   const haeJunatAsemalle = async () => {
     setLoading(true);
-
+    console.log(userStationCode)
 
     try {
       //Get all the stations in Finland
@@ -72,7 +73,6 @@ export default function TrainListing({ navigation, route }) {
     try {
       await AsyncStorage.setItem('station', value)
       createAlertWhenFavorited(value);
-      console.log("jj")
     } catch (e) {
       console.log(e);
       // saving error
@@ -85,7 +85,7 @@ export default function TrainListing({ navigation, route }) {
   ]);
 
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     haeJunatAsemalle();
   }, [pressed]);
 
