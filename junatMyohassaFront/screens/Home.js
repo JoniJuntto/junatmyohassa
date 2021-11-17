@@ -55,6 +55,15 @@ export default function Home({ navigation }) {
           // error reading value
         }
       }
+
+      const navigateToStationListing = () =>{
+          setPressed(pressed + 1 );
+          /* Navigate to the Listing route with param from async storage */
+          navigation.navigate('Station', {
+              userInput: inputText,
+              pressed: pressed,
+          });
+      }
     
       
       
@@ -67,18 +76,17 @@ export default function Home({ navigation }) {
         <View style={styles.container}>
             
           <View>
-          <GetClosestStations location={location} /> 
+          <GetClosestStations 
+            navigateToStationListing={navigateToStationListing} 
+            location={location}  
+            pressed={pressed} 
+            setPressed={setPressed} 
+            setInputText={setInputText}
+          /> 
           
             <Button
                 title="Use your favourite station"
-                onPress={() => {
-                    setPressed(pressed + 1 );
-                    /* Navigate to the Listing route with param from async storage */
-                    navigation.navigate('Station', {
-                        userInput: station,
-                        pressed: pressed,
-                    });
-                }}
+                onPress={navigateToStationListing}
             />
             </View>
             <View>

@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ActivityIndicator } from "react-native";
 import List from "../components/List";
 import styles from "../styles/Styles";
-import Map from "../components/Map";
-import { useFocusEffect } from "@react-navigation/native";
 import { IconButton, Colors } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TrainListing({ navigation, route }) {
-  //MIKSI TÄMÄ EI PÄIVITY!!!!!
-  const { userInput, pressed } = route.params;
 
+  const { userInput, pressed } = route.params;
   const [haut, setHaut] = useState([]);
   const [hautAsema, setHautAsema] = useState([]);
   const [virhe, setVirhe] = useState("");
@@ -21,7 +18,7 @@ export default function TrainListing({ navigation, route }) {
   const getStations = async () => {
     try {
       const response = await fetch(
-        "http://172.20.10.3:3000/asemat/"
+        "http://172.20.10.2:3000/asemat/"
       );
       const json = await response.json();
       setHautAsema(json);
@@ -56,7 +53,7 @@ export default function TrainListing({ navigation, route }) {
 
       //Getting the station that user wanted
       const response = await fetch(
-        "http://192.168.1.102:3000/graphfetch/" + userStationCode
+        "http://172.20.10.2:3000/graphfetch/" + userStationCode
       );
       const json = await response.json();
       setHaut(json);
