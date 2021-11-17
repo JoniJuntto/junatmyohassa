@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, Alert } from "react-native";
 import List from "../components/List";
 import styles from "../styles/Styles";
 import { IconButton, Colors } from 'react-native-paper';
@@ -71,11 +71,19 @@ export default function TrainListing({ navigation, route }) {
 
     try {
       await AsyncStorage.setItem('station', value)
+      createAlertWhenFavorited(value);
+      console.log("jj")
     } catch (e) {
       console.log(e);
       // saving error
     }
   }
+
+  const createAlertWhenFavorited = (station) =>
+  Alert.alert('Lisätty asema suosikkeihin!', `Asema ${station} lisätty suosikkeihisi!`, [
+    { text: 'OK', onPress: () => console.log('OK Pressed') },
+  ]);
+
 
   useEffect(() => {
     haeJunatAsemalle();

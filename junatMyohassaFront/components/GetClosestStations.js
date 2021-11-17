@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import React, { useState, useEffect } from 'react';
 import { IconButton, Colors } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -69,6 +69,7 @@ export default function GetClosestStations({ location, setInputText, pressed, se
 
     const storeData = async (item) => {
         const value = item.toString();
+        createAlertWhenFavorited(item);
         try {
             await AsyncStorage.setItem('station', value)
         } catch (e) {
@@ -98,6 +99,11 @@ export default function GetClosestStations({ location, setInputText, pressed, se
         setInputText(station);
         navigateToStationListing();
     }
+
+    const createAlertWhenFavorited = (station) =>
+    Alert.alert('Lisätty asema suosikkeihin!', `Asema ${station} lisätty suosikkeihisi!`, [
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ]);
 
 
     return (
