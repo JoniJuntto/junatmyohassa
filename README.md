@@ -1,4 +1,4 @@
-# Junatmyöhässä 
+# Junatmyöhässä / TrainsLate
 
 TrainRemind is a mobile app created with [React Native](https://reactnative.dev/), [Expo](https://expo.dev/) , [Node.js](https://nodejs.org/en/) and [Express.js](https://expressjs.com/). It helps the user to find out if his/hers trains are late or cancelled. It also brings a lot more useful features regarding public transport in Finland.
 
