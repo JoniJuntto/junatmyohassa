@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1024577305516",
+    "project_id": "junatmyohassa-728ee",
+    "storage_bucket": "junatmyohassa-728ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024577305516:android:048a2a414b0a102c6b1809",
+        "android_client_info": {
+          "package_name": "com.company.junatmyohassa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1024577305516-tb693ed3e62sqmhml2t1bvlae9iv6tus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiCHqiyu-mYre7rt7Xh1h6eUXdl_Z6v9c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1024577305516-tb693ed3e62sqmhml2t1bvlae9iv6tus.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

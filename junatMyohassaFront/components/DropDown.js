@@ -15,7 +15,7 @@ export default function DropDown({ route }) {
     const haeKaikkiJunat = async () => {
         try {
             const response = await
-                fetch('http://10.0.2.2:3000/kaikki');
+                fetch('http://junatback.herokuapp.com/kaikki');
             const json = await response.json();
             setHaut(json);
             setVirhe('');

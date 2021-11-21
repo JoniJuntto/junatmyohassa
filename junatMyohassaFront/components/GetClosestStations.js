@@ -28,7 +28,7 @@ export default function GetClosestStations({ location, setInputText, pressed, se
         try {
             console.log("Fetching stations")
             const response = await fetch(
-                "http://172.20.10.2:3000/asemat/"
+                "http://junatback.herokuapp.com/asemat/"
             );
             const json = await response.json();
             setStationArray(json);

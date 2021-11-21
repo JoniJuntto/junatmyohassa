@@ -19,7 +19,7 @@ export default function TrainListing({ route }) {
   const getStations = async () => {
     try {
       const response = await fetch(
-        "http://172.20.10.2:3000/asemat/"
+        "http://junatback.herokuapp.com/asemat/"
       );
       const json = await response.json();
       setHautAsema(json);
@@ -54,7 +54,7 @@ export default function TrainListing({ route }) {
 
       //Getting the station that user wanted
       const response = await fetch(
-        "http://172.20.10.2:3000/graphfetch/" + userStationCode
+        "http://junatback.herokuapp.com/graphfetch/" + userStationCode
       );
       const json = await response.json();
       setHaut(json);

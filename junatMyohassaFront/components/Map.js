@@ -36,7 +36,7 @@ export default function Map(props) {
         try {
             console.log(props.data.trainNumber);
             const response = await
-              fetch('http://10.0.2.2:3000/sijainti/' + props.data.trainNumber);
+              fetch('http://junatback.herokuapp.com/sijainti/' + props.data.trainNumber);
             const json = await response.json();
             var haut = json;
             setMarkerLatitude(haut[0].location.coordinates[1]);

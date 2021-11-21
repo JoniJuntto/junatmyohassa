@@ -1,5 +1,19 @@
 {
   "expo": {
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./local/assets/notification-icon.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./local/assets/notification-sound.wav",
+            "./local/assets/notification-sound-other.wav"
+          ],
+          "mode": "production"
+        }
+      ]
+    ],
     "name": "junatMyohassaFront",
     "slug": "junatMyohassaFront",
     "version": "1.0.0",
@@ -20,6 +34,8 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
+        "package": "com.company.junatmyohassa",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
