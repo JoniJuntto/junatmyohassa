@@ -80,9 +80,8 @@ export default function GetClosestStations({ location, setInputText, pressed, se
     const locationCheck = (element) => {
         const elementLong = element.longitude;
         const elementLat = element.latitude;
-    
-        const long = 60.18122735134243;
-        const lat = 24.95357544527876;
+        const long = location.coords.longitude;
+        const lat = location.coords.latitude;
         const distance = getDistanceFromLatLonInKm(lat, long, elementLat, elementLong)
         if (distance < 10) {
             if(closestStations.length < 11){
