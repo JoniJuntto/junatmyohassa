@@ -94,7 +94,7 @@ export default function TrainListing({ route }) {
     <View>
       <Text>{virhe}</Text>
       <Text>Cannot fetch the trains, check your internet-connection</Text>
-    </View>;
+    </View>
   }
 
   return (

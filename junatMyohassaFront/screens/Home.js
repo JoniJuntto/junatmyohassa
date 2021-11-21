@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
-import Map from '../components/Map'
+import { View, TextInput, Button } from 'react-native';
 import styles from '../styles/Styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ButtonGroup } from 'react-native-elements';
 import * as Location from 'expo-location';
 import GetClosestStations from '../components/GetClosestStations';
 

@@ -37,10 +37,10 @@ export default function TrainInfo({ route }) {
         onPress={storeData}
       /><Text>Lisää juna suosikkeihin</Text>
       <View>
-        <Text>{ID}</Text>
-        <Text>{trainNr}</Text>
-        <Text>{title.timeTableRows[0].differenceInMinutes}</Text>
-        <Text>{title.timeTableRows[0].scheduledTime.slice(11, 16)}</Text>
+        <Text>Junan ID: {ID}</Text>
+        <Text>Junan numero: {trainNr}</Text>
+        <Text>Juna tällä hetkellä myöhässä: {title.timeTableRows[0].differenceInMinutes} minuuttia</Text>
+        <Text>Junan suunniteltu lähtöaika on: {title.timeTableRows[0].scheduledTime.slice(11, 16)}</Text>
       </View>
       <Map data={title} />
     </View>
