@@ -2,7 +2,7 @@ import React, { useState, useLayoutEffect } from "react";
 import { View, Text, ActivityIndicator, Alert } from "react-native";
 import List from "../components/List";
 import styles from "../styles/Styles";
-import { IconButton, Colors } from 'react-native-paper';
+import { IconButton, Colors, Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TrainListing({ route }) {
@@ -53,6 +53,7 @@ export default function TrainListing({ route }) {
       await stations.forEach(formatterFn);
 
       //Getting the station that user wanted
+      console.log(userStationCode)
       const response = await fetch(
         "http://junatback.herokuapp.com/graphfetch/" + userStationCode
       );
@@ -99,6 +100,7 @@ export default function TrainListing({ route }) {
 
   return (
     <View style={styles.container}>
+      <Button onPress={getStations}>Refresh</Button>
         <Text>Tässä junat jotka menevät asemalta: {userInput}</Text>
         <IconButton
           icon="heart"
