@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Text } from 'react-native';
-import Map from '../components/Map'
+import { View, TextInput, Button } from 'react-native';
 import styles from '../styles/Styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ButtonGroup } from 'react-native-elements';
 import * as Location from 'expo-location';
 import GetClosestStations from '../components/GetClosestStations';
 
@@ -55,6 +53,15 @@ export default function Home({ navigation }) {
           // error reading value
         }
       }
+
+      const navigateToStationListing = () =>{
+          setPressed(pressed + 1 );
+          /* Navigate to the Listing route with param from async storage */
+          navigation.navigate('Station', {
+              userInput: inputText,
+              pressed: pressed,
+          });
+      }
     
       
       
@@ -67,18 +74,17 @@ export default function Home({ navigation }) {
         <View style={styles.container}>
             
           <View>
-          <GetClosestStations location={location} /> 
+          <GetClosestStations 
+            navigateToStationListing={navigateToStationListing} 
+            location={location}  
+            pressed={pressed} 
+            setPressed={setPressed} 
+            setInputText={setInputText}
+          /> 
           
             <Button
                 title="Use your favourite station"
-                onPress={() => {
-                    setPressed(pressed + 1 );
-                    /* Navigate to the Listing route with param from async storage */
-                    navigation.navigate('Station', {
-                        userInput: station,
-                        pressed: pressed,
-                    });
-                }}
+                onPress={navigateToStationListing}
             />
             </View>
             <View>
@@ -88,7 +94,7 @@ export default function Home({ navigation }) {
                 keyboardType={'default'}
                 //This is hacky way to get the text from TextInput :D
                 onChangeText={text => setInputText(text)} value={inputText}
-                placeholder="Find a train or station"
+                placeholder="Syötä asema"
             />
 
             <Button

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, FlatList, Button } from "react-native";
+import { Text, View, FlatList, Button, Alert } from "react-native";
 import { styles } from "../styles/Styles";
 import Map from "../components/Map";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,6 +9,11 @@ import { IconButton, Colors } from 'react-native-paper';
 export default function TrainInfo({ route }) {
   const { ID, trainNr, title } = route.params;
 
+  const createAlertWhenFavorited = (train) =>
+  Alert.alert('Lisätty juna suosikkeihin!', `Juna numero ${train} lisätty suosikkeihisi!`, [
+    { text: 'OK', onPress: () => console.log('OK Pressed') },
+  ]);
+
   //Funktio, jonka kutsuu nappula, joka lisää train numberin async storageen
  // Tämän voi toteuttaa samanlailla kuin EditUserInfo.js tehdään aseman kohdalla
  const storeData = async () => {
@@ -16,8 +21,7 @@ export default function TrainInfo({ route }) {
 
   try {
     await AsyncStorage.setItem('train', value)
-    const kikkeli = await AsyncStorage.getItem('train');
-    console.log(kikkeli);
+    createAlertWhenFavorited(value);
   } catch (e) {
     console.log(e);
     // saving error
@@ -26,8 +30,6 @@ export default function TrainInfo({ route }) {
 
   return (
     <View>
-      {/* Tähän nappula josta painamalla käyttäjä valitsee junan suosikkeihin */}
-  
       <IconButton
         icon="heart"
         color={Colors.red500}
@@ -35,10 +37,10 @@ export default function TrainInfo({ route }) {
         onPress={storeData}
       /><Text>Lisää juna suosikkeihin</Text>
       <View>
-        <Text>{ID}</Text>
-        <Text>{trainNr}</Text>
-        <Text>{title.timeTableRows[0].differenceInMinutes}</Text>
-        <Text>{title.timeTableRows[0].scheduledTime.slice(11, 16)}</Text>
+        <Text>Junan ID: {ID}</Text>
+        <Text>Junan numero: {trainNr}</Text>
+        <Text>Juna tällä hetkellä myöhässä: {title.timeTableRows[0].differenceInMinutes} minuuttia</Text>
+        <Text>Junan suunniteltu lähtöaika on: {title.timeTableRows[0].scheduledTime.slice(11, 16)}</Text>
       </View>
       <Map data={title} />
     </View>

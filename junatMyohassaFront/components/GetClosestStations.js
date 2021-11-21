@@ -1,6 +1,5 @@
-import { View, Text, Button, FlatList, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import React, { useState, useEffect } from 'react';
-import { forEach } from "lodash";
 import { IconButton, Colors } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -17,13 +16,11 @@ const styles = StyleSheet.create({
     },
 });
 
-export default function GetClosestStations({ location }) {
-    console.log("Getting trains near location " + location.coords.latitude + " " + location.coords.longitude)
-    const [hauts, setHaut] = useState('');
-    const [virhe, setVirhe] = useState('');
+export default function GetClosestStations({ location, setInputText, pressed, setPressed, navigateToStationListing }) {
+    
+    const [stationArray, setStationArray] = useState([]);
     const [closestStations, setClosestStations] = useState([]);
     const [loading, setLoading] = useState(false);
-
 
 
     const getStations = async () => {
@@ -31,15 +28,12 @@ export default function GetClosestStations({ location }) {
         try {
             console.log("Fetching stations")
             const response = await fetch(
-                "http://172.20.10.3:3000/asemat/"
+                "http://172.20.10.2:3000/asemat/"
             );
             const json = await response.json();
-            setHaut(json);
-            setVirhe("");
-            doIt(json);
+            setStationArray(json);
         } catch (error) {
-            setHaut([]);
-            setVirhe(error);
+            setStationArray([]);
             console.log(error)
         }
         setLoading(false);
@@ -49,6 +43,10 @@ export default function GetClosestStations({ location }) {
     useEffect(() => {
         getStations();
     }, [location]);
+
+    useEffect(() => {
+        feedStations();
+    }, [stationArray]);
 
     function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         var R = 6371; // Radius of the earth in km
@@ -70,10 +68,9 @@ export default function GetClosestStations({ location }) {
 
     const storeData = async (item) => {
         const value = item.toString();
+        createAlertWhenFavorited(item);
         try {
             await AsyncStorage.setItem('station', value)
-            const print = await AsyncStorage.getItem('station');
-            console.log(print);
         } catch (e) {
             console.log(e);
             // saving error
@@ -89,20 +86,28 @@ export default function GetClosestStations({ location }) {
         if (distance < 10) {
             if(closestStations.length < 11){
             closestStations.push(element)
-            }else{
-                
             }
         }
     }
-    const doIt = async (haut) => {
-        
-        await haut.forEach(locationCheck);
+    const feedStations = () => {
+        stationArray.forEach(locationCheck);
     }
+
+    const navigateTo = (station) =>{
+        setPressed(pressed + 1);
+        setInputText(station);
+        navigateToStationListing();
+    }
+
+    const createAlertWhenFavorited = (station) =>
+    Alert.alert('Lisätty asema suosikkeihin!', `Asema ${station} lisätty suosikkeihisi!`, [
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ]);
 
 
     return (
         <View style={{ height: 300 }}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>10 sinua lähintä asemaa:</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>10 asemaa lähelläsi:</Text>
             <ActivityIndicator animating={loading} size="large" color="#00ff00" />
             <FlatList
                 data={closestStations}
@@ -115,7 +120,7 @@ export default function GetClosestStations({ location }) {
                             size={24}
                             onPress={() => { storeData(item.stationName) }}
                         />
-                        <Text style={styles.item}>{item.stationName}</Text>
+                        <Text onPress={()=>{navigateTo(item.stationName)}} style={styles.item}>{item.stationName}</Text>
                         
                     </View>}
             />
