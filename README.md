@@ -23,19 +23,19 @@ Expo developer tools will open up to a new window if not, run
 ## Installation ready
 Now you can pick your platform from Expo developer tools window in you browser
 
-#Most used libraries
+# Most used libraries
 
-##React-navigation
+## React-navigation
 
-##Material UI
+## Material UI
 
-##AsyncStorage
+## AsyncStorage
 
-##expo-location
+## expo-location
 
-##expo-notifications
+## expo-notifications
 
-##react-native-map
+## react-native-map
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
