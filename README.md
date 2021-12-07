@@ -6,6 +6,7 @@ TrainRemind is a mobile app created with [React Native](https://reactnative.dev/
 ![Screenshot_20211207_192013_host exp exponent](https://user-images.githubusercontent.com/72009463/145078162-02607c82-1a09-4d2a-a74e-e53c6b340342.jpg)
 ![Screenshot_20211207_192026_host exp exponent](https://user-images.githubusercontent.com/72009463/145078176-0dd730a8-c48d-43c5-9866-bdad17d7345c.jpg)
 ![Screenshot_20211207_191905_host exp exponent](https://user-images.githubusercontent.com/72009463/145078187-1a7162e6-a604-4138-bbf0-030c7328e5db.jpg)
+![IMG-20211121-WA0007](https://user-images.githubusercontent.com/72009463/145086497-3c829d54-9625-43a1-93a3-787485284ba4.jpg)
 
 ## Installation
 First download the project from GitHub or fork it and clone it. 
