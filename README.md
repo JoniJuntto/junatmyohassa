@@ -30,9 +30,6 @@ Now you can pick your platform from Expo developer tools window in you browser
 
 # Most used libraries
 
-## React-navigation
-[React navigation](https://reactnavigation.org/)
-
 ## Material UI
 [Material UI](https://mui.com/)
 MUI provides a robust, customizable, and accessible library of foundational and advanced components, enabling you to build your own design system and develop React applications faster.
@@ -52,5 +49,8 @@ The expo-notifications provides an API to fetch push notification tokens and to 
 [React native maps](https://github.com/react-native-maps/react-native-maps)
 React Native Map components for iOS + Android
 
-## License
+## React-navigation
+[React navigation](https://reactnavigation.org/)
+
+# License
 [MIT](https://choosealicense.com/licenses/mit/)
