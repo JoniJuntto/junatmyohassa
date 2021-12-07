@@ -26,6 +26,7 @@ Now you can pick your platform from Expo developer tools window in you browser
 # Most used libraries
 
 ## React-navigation
+[React navigation] (https://reactnavigation.org/)
 
 ## Material UI
 
